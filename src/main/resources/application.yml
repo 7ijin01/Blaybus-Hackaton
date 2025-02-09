@@ -1,0 +1,22 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/
+      database: blaybus
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+
+
+jwt:
+  issuer: am030818@naver.com
+  secret: "jfsgkhdsjkweoiruwqejkrfbhnsadkjlfghbwerqewrsdfgdsfagbdf"
+  access-expiration: 3600
+  refresh-expiration: 8640
