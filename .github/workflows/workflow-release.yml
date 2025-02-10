@@ -17,12 +17,6 @@ jobs:
 
 
     steps:
-      - name: Print Environment Variables (Debug)
-        run: |
-          echo "::add-mask::$GOOGLE_CLIENT_ID"
-          echo "::add-mask::$GOOGLE_CLIENT_SECRET"
-          echo "GOOGLE_CLIENT_ID: $GOOGLE_CLIENT_ID"
-          echo "GOOGLE_CLIENT_SECRET: $GOOGLE_CLIENT_SECRET"
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -88,6 +82,8 @@ jobs:
             --name ${IMAGE_NAME} \
             --network compose_default \
             -p 8080:8080 \
+            -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
+            -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
             us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
 
             
