@@ -17,6 +17,10 @@ jobs:
 
 
     steps:
+      - name: Print Environment Variables
+        run: |
+              echo "GOOGLE_CLIENT_ID: $GOOGLE_CLIENT_ID"
+              echo "GOOGLE_CLIENT_SECRET: $GOOGLE_CLIENT_SECRET"
       - name: Checkout
         uses: actions/checkout@v3
 
