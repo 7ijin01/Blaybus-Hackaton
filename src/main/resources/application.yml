@@ -13,7 +13,13 @@ spring:
             scope:
               - profile
               - email
-
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+          redirect-uri: http://blaybus-glowup.p-e.kr:8080/oauth2/code/google
 
 jwt:
   issuer: am030818@naver.com
