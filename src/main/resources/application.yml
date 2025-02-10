@@ -29,7 +29,7 @@ jwt:
   refresh-expiration: 8640
 
 server:
-  port: 443
+  port: 8443
   ssl:
     enabled: true
     key-store: classpath:/keystore.p12

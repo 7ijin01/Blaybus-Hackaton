@@ -83,6 +83,7 @@ jobs:
               --name ${IMAGE_NAME} \
               --network compose_default \
               -p 8080:8080 \
+              -p 8443:8443 \
               -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
               -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
               us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
