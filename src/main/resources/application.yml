@@ -13,7 +13,8 @@ spring:
             scope:
               - profile
               - email
-            redirect-uri: "http://blaybus-glowup.p-e.kr:8080/oauth2/code/google"
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/auth
