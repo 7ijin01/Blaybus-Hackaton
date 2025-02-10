@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/
+      uri: mongodb://34.70.26.180:27017/
       database: blaybus
   security:
     oauth2:
