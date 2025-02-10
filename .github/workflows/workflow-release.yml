@@ -84,6 +84,7 @@ jobs:
               --network compose_default \
               -p 8080:8080 \
               -p 8443:8443 \
+              -v /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12:/etc/letsencrypt/live/blaybus-glowup.com/keystore.p12 \
               -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
               -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
               us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
