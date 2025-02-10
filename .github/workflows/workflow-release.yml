@@ -61,7 +61,8 @@ jobs:
       GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
       IMAGE_NAME: blaybus
       IMAGE_TAG: ${{ github.sha }}
-      MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
     steps:
       - name: 배포 서버에 SSH로 연결하여 배포
         uses: appleboy/ssh-action@v0.1.5
