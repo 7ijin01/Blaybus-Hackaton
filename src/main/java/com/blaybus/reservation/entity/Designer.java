@@ -3,6 +3,7 @@ package com.blaybus.reservation.entity;
 import lombok.*;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,10 +32,6 @@ public class Designer
     private String field;
     private String introduction;
     private Integer meet;
-    private Map<String, List<Map<String, String>>> timeTable;
+    private List<String> timeTable = new ArrayList<>();
 
-    public void setTimeTable(String date, Map<String, String> newReservation) {
-        // 날짜별 예약 리스트를 가져오거나, 없으면 새 리스트 생성
-        timeTable.computeIfAbsent(date, k -> new ArrayList<>()).add(newReservation);
-    }
 }
