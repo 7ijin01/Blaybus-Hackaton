@@ -23,9 +23,10 @@ public class ReservationController
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(@RequestHeader("Authorization") String accessToken) {
-        System.out.println(accessToken);
-        return ResponseEntity.ok(reservationService.createReservation(accessToken));
+    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(//@RequestHeader("Authorization") String accessToken,
+                                                                                        @RequestBody ReservationRequestDto.ReservationRequest request) {
+        //System.out.println(accessToken);
+        return ResponseEntity.ok(reservationService.createReservation(request));
     }
 
     @PutMapping("/{reservationId}/mode")
@@ -61,6 +62,11 @@ public class ReservationController
             @RequestBody ReservationRequestDto.ReservationDateRequest request) {
 
         return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(designerId, request));
+    }
+
+    @DeleteMapping("/cancel")
+    public void deleteReservation(@RequestParam("reservationId") String reservationId, @RequestParam("designerId") String designerId){
+        reservationService.deleteReservationById(reservationId, designerId);
     }
 
 
