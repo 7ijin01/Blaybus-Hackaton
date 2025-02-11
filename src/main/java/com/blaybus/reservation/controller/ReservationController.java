@@ -5,6 +5,7 @@ import com.blaybus.reservation.dto.ReservationResponseDto;
 
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.service.ReservationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,11 +65,22 @@ public class ReservationController
         return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(designerId, request));
     }
 
-    @DeleteMapping("/cancel")
-    public void deleteReservation(@RequestParam("reservationId") String reservationId, @RequestParam("designerId") String designerId){
-        reservationService.deleteReservationById(reservationId, designerId);
-    }
+    @DeleteMapping("/del")
+    public ResponseEntity<String> deleteReservation(
+            @RequestParam("designerId") String designerId,
+            @RequestParam("reservationId") String reservationId) {
 
+        System.out.println("Deleting reservation: " + reservationId);
+
+        boolean deleted = reservationService.deleteReservationById(designerId, reservationId);
+
+        if (deleted) {
+            return ResponseEntity.ok("예약이 성공적으로 취소되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("해당 예약을 찾을 수 없습니다.");
+        }
+    }
 
 
 }
