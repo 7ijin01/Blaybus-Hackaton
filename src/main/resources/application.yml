@@ -3,3 +3,18 @@ spring:
     mongodb:
       uri: mongodb://root:1234@localhost:27017/qwerqwer
       authentication-database: admin
+
+  security:
+    user:
+      name: admin
+      password: 1234
+
+  profiles:
+    active: pay
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
