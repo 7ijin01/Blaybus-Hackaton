@@ -1,7 +1,7 @@
-package com.blaybus.reservation.repository;
+package com.blaybus.domain.reservation.repository;
 
-import com.blaybus.reservation.entity.Designer;
-import com.blaybus.reservation.repository.custom.design.CustomDesignerRepository;
+import com.blaybus.domain.reservation.entity.Designer;
+import com.blaybus.domain.reservation.repository.custom.design.CustomDesignerRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

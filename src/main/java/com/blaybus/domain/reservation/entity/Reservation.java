@@ -1,4 +1,4 @@
-package com.blaybus.reservation.entity;
+package com.blaybus.domain.reservation.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

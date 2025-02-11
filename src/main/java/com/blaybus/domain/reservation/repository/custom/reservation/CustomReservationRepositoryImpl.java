@@ -1,17 +1,18 @@
-package com.blaybus.reservation.repository.custom.reservation;
+package com.blaybus.domain.reservation.repository.custom.reservation;
 
-import com.blaybus.reservation.entity.Reservation;
-import com.blaybus.reservation.repository.MongoRepositoryUtil;
+import com.blaybus.domain.reservation.entity.Reservation;
+import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
+@Repository
 public class CustomReservationRepositoryImpl implements CustomReservationRepository {
     private final MongoTemplate mongoTemplate;
 
@@ -36,6 +37,13 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
                 .stream()
                 .map(reservation -> reservation.getStart().toString())
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Reservation> findAllByGoogleId(String googleId) {
+        Query query = new Query(Criteria.where("googleId").is(googleId));
+
+        return mongoTemplate.find(query, Reservation.class);
     }
 }
 

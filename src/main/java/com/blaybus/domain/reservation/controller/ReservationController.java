@@ -1,10 +1,10 @@
-package com.blaybus.reservation.controller;
+package com.blaybus.domain.reservation.controller;
 
-import com.blaybus.reservation.dto.ReservationRequestDto;
-import com.blaybus.reservation.dto.ReservationResponseDto;
+import com.blaybus.domain.reservation.dto.ReservationRequestDto;
+import com.blaybus.domain.reservation.dto.ReservationResponseDto;
 
-import com.blaybus.reservation.entity.Reservation;
-import com.blaybus.reservation.service.ReservationService;
+import com.blaybus.domain.reservation.entity.Reservation;
+import com.blaybus.domain.reservation.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +61,11 @@ public class ReservationController
             @RequestBody ReservationRequestDto.ReservationDateRequest request) {
 
         return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(designerId, request));
+    }
+
+    @GetMapping("/load")
+    public ResponseEntity<List<Reservation>> getReservationByUserInfo(@RequestHeader("Authorization") String accessToken){
+        return ResponseEntity.ok(reservationService.findReservationByUserInfo(accessToken));
     }
 
 

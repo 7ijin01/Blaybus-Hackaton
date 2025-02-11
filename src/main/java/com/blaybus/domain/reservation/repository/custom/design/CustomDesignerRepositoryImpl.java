@@ -1,15 +1,13 @@
-package com.blaybus.reservation.repository.custom.design;
+package com.blaybus.domain.reservation.repository.custom.design;
 
-import com.blaybus.reservation.entity.Designer;
+import com.blaybus.domain.reservation.entity.Designer;
 
-import com.blaybus.reservation.entity.Reservation;
-import com.blaybus.reservation.repository.MongoRepositoryUtil;
+import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
 {

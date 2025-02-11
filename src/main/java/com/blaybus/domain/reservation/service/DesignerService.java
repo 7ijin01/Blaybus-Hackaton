@@ -1,11 +1,10 @@
-package com.blaybus.reservation.service;
+package com.blaybus.domain.reservation.service;
 
-import com.blaybus.reservation.entity.Designer;
-import com.blaybus.reservation.repository.DesignerRepository;
+import com.blaybus.domain.reservation.entity.Designer;
+import com.blaybus.domain.reservation.repository.DesignerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class DesignerService

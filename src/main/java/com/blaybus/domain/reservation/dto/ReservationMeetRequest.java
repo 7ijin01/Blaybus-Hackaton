@@ -1,4 +1,4 @@
-package com.blaybus.reservation.dto;
+package com.blaybus.domain.reservation.dto;
 
 import lombok.Getter;
 import lombok.Setter;

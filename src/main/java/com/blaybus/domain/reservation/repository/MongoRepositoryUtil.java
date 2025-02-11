@@ -1,4 +1,4 @@
-package com.blaybus.reservation.repository;
+package com.blaybus.domain.reservation.repository;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;

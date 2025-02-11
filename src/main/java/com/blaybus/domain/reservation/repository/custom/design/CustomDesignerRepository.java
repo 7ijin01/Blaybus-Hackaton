@@ -1,9 +1,8 @@
-package com.blaybus.reservation.repository.custom.design;
+package com.blaybus.domain.reservation.repository.custom.design;
 
-import com.blaybus.reservation.entity.Designer;
+import com.blaybus.domain.reservation.entity.Designer;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CustomDesignerRepository
 {

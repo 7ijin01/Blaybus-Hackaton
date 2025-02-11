@@ -1,7 +1,7 @@
-package com.blaybus.reservation.controller;
+package com.blaybus.domain.reservation.controller;
 
-import com.blaybus.reservation.entity.Designer;
-import com.blaybus.reservation.service.DesignerService;
+import com.blaybus.domain.reservation.entity.Designer;
+import com.blaybus.domain.reservation.service.DesignerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

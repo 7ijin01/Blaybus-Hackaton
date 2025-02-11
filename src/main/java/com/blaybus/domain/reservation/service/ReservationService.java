@@ -1,22 +1,20 @@
-package com.blaybus.reservation.service;
+package com.blaybus.domain.reservation.service;
 
 import com.blaybus.global.jwt.JwtUtil;
-import com.blaybus.reservation.dto.ReservationRequestDto;
-import com.blaybus.reservation.dto.ReservationResponseDto;
-import com.blaybus.reservation.entity.Designer;
-import com.blaybus.reservation.entity.Reservation;
-import com.blaybus.reservation.repository.ReservationRepository;
+import com.blaybus.domain.reservation.dto.ReservationRequestDto;
+import com.blaybus.domain.reservation.dto.ReservationResponseDto;
+import com.blaybus.domain.reservation.entity.Designer;
+import com.blaybus.domain.reservation.entity.Reservation;
+import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -110,4 +108,7 @@ public class ReservationService
         return reservation;
     }
 
+    public List<Reservation> findReservationByUserInfo(String accessToken){
+        return reservationRepository.findAllByGoogleId(jwtUtil.getEmail(accessToken));
+    }
 }
