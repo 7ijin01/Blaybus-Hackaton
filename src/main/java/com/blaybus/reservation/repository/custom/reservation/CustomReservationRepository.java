@@ -13,4 +13,5 @@ public interface CustomReservationRepository
 {
     Reservation findOneById(String reservationId);
     Set<String> findByDesignerIdAndDate(String designerId, LocalDate date);
+
 }

@@ -12,8 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class CustomReservationRepositoryImpl implements CustomReservationRepository
-{
+public class CustomReservationRepositoryImpl implements CustomReservationRepository {
     private final MongoTemplate mongoTemplate;
 
     public CustomReservationRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -21,26 +20,23 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     }
 
     @Override
-    public Reservation findOneById(String reservationId)
-    {
-        Query query=new Query();
+    public Reservation findOneById(String reservationId) {
+        Query query = new Query();
         query.addCriteria(Criteria.where("id").is(reservationId));
         return MongoRepositoryUtil.findOneById(mongoTemplate, reservationId, Reservation.class);
     }
 
     @Override
-    public Set<String> findByDesignerIdAndDate(String designerId, LocalDate date)
-    {
+    public Set<String> findByDesignerIdAndDate(String designerId, LocalDate date) {
         Query query = new Query();
         query.addCriteria(Criteria.where("designerId").is(designerId)
-                .and("date").is(date.format(DateTimeFormatter.ISO_DATE)));
-
-        query.fields().include("start");
+                .and("date").gte(date.atStartOfDay()).lt(date.plusDays(1).atStartOfDay()));
 
         return mongoTemplate.find(query, Reservation.class)
                 .stream()
                 .map(reservation -> reservation.getStart().toString())
                 .collect(Collectors.toSet());
-
     }
 }
+
+
