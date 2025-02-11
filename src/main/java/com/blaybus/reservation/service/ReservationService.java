@@ -5,8 +5,10 @@ import com.blaybus.reservation.dto.ReservationRequestDto;
 import com.blaybus.reservation.dto.ReservationResponseDto;
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.entity.Reservation;
+import com.blaybus.reservation.repository.DesignerRepository;
 import com.blaybus.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,9 +19,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService
 {
     private final ReservationRepository reservationRepository;
+    private final DesignerRepository designerRepository;
     private final DesignerService designerService;
     private final JwtUtil jwtUtil;
     //유저 코드 생성이후 연동할 예정
@@ -35,14 +39,17 @@ public class ReservationService
         newReservation.put("start", request.getStart()); // "HH:mm" 형태의 시작 시간
         newReservation.put("end", request.getEnd());     // "HH:mm" 형태의 끝나는 시간
 
-        designer.setTimeTable(request.getDate(), newReservation);
-        designerService.processUpdateTimeTable(designer);
+
 
         Reservation reservation = new Reservation();
         reservation.setUserId("103066378037959369997");
+
+
         reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus("PENDING");
-        reservationRepository.save(reservation);
+        String reserveId = reservationRepository.save(reservation).getId();
+        designer.getTimeTable().add(reserveId);
+        designerRepository.save(designer);
         return new ReservationResponseDto.ReservationResponse(reservation.getId(),reservation.getStatus());
     }
 
@@ -117,23 +124,20 @@ public class ReservationService
         return reservation;
     }
 
-    public void deleteReservationById(String reservationId, String designerId){
-        Reservation reservation = reservationRepository.findOneById(reservationId);
+    public boolean deleteReservationById(String designerId, String reservationId){
+
+        Reservation reservation = findReservationById(reservationId);
         Designer designer = designerService.getOneDesigner(designerId);
 
-        String date = reservation.getDate().toString();
-
-
-        designer.setTimeTable(updateTimeTable(designer, date));
-
+        designer.getTimeTable().remove(reservationId);
         designerService.processUpdateTimeTable(designer);
         reservationRepository.delete(reservation);
+        return true;
     }
 
-    public Map<String, List<Map<String, String>>> updateTimeTable(Designer designer, String date){
-        Map<String, List<Map<String, String>>> timeTable = designer.getTimeTable();
-        List<Map<String, String>> dayTable = timeTable.getOrDefault(date, null);
-        timeTable.remove(date, dayTable);
-        return timeTable;
+
+    public Reservation findReservationById(String reservationId){
+        return reservationRepository.findById(reservationId)
+                .orElseThrow(()->new RuntimeException());
     }
 }
