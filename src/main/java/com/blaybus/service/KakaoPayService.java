@@ -1,8 +1,10 @@
 package com.blaybus.service;
 
 import com.blaybus.KakaoPayProperties;
+import com.blaybus.dto.KakaoApproveRequestDTO;
 import com.blaybus.dto.KakaoApproveResponseDTO;
 import com.blaybus.dto.KakaoPayReadyResponseDTO;
+import com.blaybus.dto.KakaoPayRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -34,25 +36,25 @@ public class KakaoPayService {
     }
 
     /*
-     * 아래 예시에 맞게 결제 준비 요청 보내기
+     * 결제 준비 요청 보내기
      * */
     // https://developers.kakaopay.com/docs/payment/online/single-payment#payment-ready-sample-request
-    public KakaoPayReadyResponseDTO kakaoPayReady() {
+    public KakaoPayReadyResponseDTO kakaoPayReady(KakaoPayRequestDTO requestDTO) {
         Map<String, Object> parameters = new HashMap<>();
 
         parameters.put("cid", payProperties.getCid());
-        parameters.put("partner_order_id", "1");  // 실제 주문 번호로 교체
-        parameters.put("partner_user_id", "1");  // 실제 사용자 id로 교체
-        parameters.put("item_name", "ITEM_NAME");  // 실제 상품명으로 교체
-        parameters.put("quantity", "1");  // 수량, 숫자는 문자열로 전달
-        parameters.put("total_amount", "1200");  // 총 금액, 숫자는 문자열로 전달
+        parameters.put("partner_order_id", requestDTO.getPartnerOrderId());
+        parameters.put("partner_user_id", requestDTO.getPartnerUserId());
+        parameters.put("item_name", requestDTO.getItemName());
+        parameters.put("quantity", "1");  // 수량 -> 단일 결제니까 1로 냅둬야 하나...?
+        parameters.put("total_amount", requestDTO.getTotalAmount());
 
-        parameters.put("vat_amount", "200");  // 부가세, 숫자는 문자열로 전달
-        parameters.put("tax_free_amount", "0");  // 비과세 금액, 숫자는 문자열로 전달
+        parameters.put("vat_amount", requestDTO.getVatAmount());
+        parameters.put("tax_free_amount", requestDTO.getTaxFreeAmount());
 
-        parameters.put("approval_url", "https://localhost:8080/success");  // 등록한 url 넣기
-        parameters.put("fail_url", "https://localhost:8080/fail");
-        parameters.put("cancel_url", "https://localhost:8080/cancel");
+        parameters.put("approval_url", requestDTO.getApprovalUrl());
+        parameters.put("fail_url", requestDTO.getFailUrl());
+        parameters.put("cancel_url", requestDTO.getCancelUrl());
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
 
@@ -73,15 +75,15 @@ public class KakaoPayService {
     /**
      * 결제 완료 승인
      */
-    public KakaoApproveResponseDTO approveResponse(String pgToken) {
+    public KakaoApproveResponseDTO approveResponse(KakaoApproveRequestDTO requestDTO) {
 
         // 카카오 결제 승인 요청
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", payProperties.getCid());
         parameters.put("tid", kakaoReady.getTid());  // 이전에 준비된 TID
-        parameters.put("partner_order_id", "1");  // 실제 주문 ID로 교체
-        parameters.put("partner_user_id", "1");  // 실제 사용자 ID로 교체
-        parameters.put("pg_token", pgToken);  // 카카오에서 받은 pg_token
+        parameters.put("partner_order_id", requestDTO.getPartnerOrderId());
+        parameters.put("partner_user_id", requestDTO.getPartnerUserId());
+        parameters.put("pg_token", requestDTO.getPgToken());
 
         // 파라미터, 헤더 설정
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());

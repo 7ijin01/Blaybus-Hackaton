@@ -1,7 +1,9 @@
 package com.blaybus.controller;
 
+import com.blaybus.dto.KakaoApproveRequestDTO;
 import com.blaybus.dto.KakaoApproveResponseDTO;
 import com.blaybus.dto.KakaoPayReadyResponseDTO;
+import com.blaybus.dto.KakaoPayRequestDTO;
 import com.blaybus.exception.BusinessLogicException;
 import com.blaybus.exception.ExceptionCode;
 import com.blaybus.service.KakaoPayService;
@@ -21,16 +23,16 @@ public class KakaoPayController {
      * 결제 요청
      */
     @PostMapping("/ready")
-    public KakaoPayReadyResponseDTO readyToKakaoPay() {
-        return kakaoPayService.kakaoPayReady();
+    public KakaoPayReadyResponseDTO readyToKakaoPay(@RequestBody KakaoPayRequestDTO kakaoPayRequestDTO) {
+        return kakaoPayService.kakaoPayReady(kakaoPayRequestDTO);
     }
 
     /**
      * 결제 성공
      */
     @PostMapping("/success")
-    public ResponseEntity<KakaoApproveResponseDTO> afterPayRequest(@RequestParam("pg_token") String pgToken) {
-        KakaoApproveResponseDTO kakaoApprove = kakaoPayService.approveResponse(pgToken);
+    public ResponseEntity<KakaoApproveResponseDTO> afterPayRequest(@RequestBody KakaoApproveRequestDTO requestDTO) {
+        KakaoApproveResponseDTO kakaoApprove = kakaoPayService.approveResponse(requestDTO);
 
         return new ResponseEntity<>(kakaoApprove, HttpStatus.OK);
     }
