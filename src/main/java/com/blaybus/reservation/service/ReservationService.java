@@ -1,10 +1,12 @@
 package com.blaybus.reservation.service;
 
+import com.blaybus.global.jwt.JwtUtil;
 import com.blaybus.reservation.dto.ReservationRequestDto;
 import com.blaybus.reservation.dto.ReservationResponseDto;
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.repository.ReservationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,20 +19,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ReservationService
 {
     private final ReservationRepository reservationRepository;
     private final DesignerService designerService;
-
-    public ReservationService(ReservationRepository reservationRepository, DesignerService designerService) {
-        this.reservationRepository = reservationRepository;
-        this.designerService = designerService;
-    }
-
+    private final JwtUtil jwtUtil;
     //유저 코드 생성이후 연동할 예정
-    public ReservationResponseDto.ReservationResponse createReservation() {
+    public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
+        String userName = jwtUtil.getName(accessToken);
+        String googleId = jwtUtil.getEmail(accessToken);
         Reservation reservation = new Reservation();
-        reservation.setUserId("3");
+        reservation.setUserId(googleId);
         reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus("PENDING");
         reservationRepository.save(reservation);
