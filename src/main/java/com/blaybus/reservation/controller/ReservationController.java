@@ -1,9 +1,14 @@
 package com.blaybus.reservation.controller;
 
-import com.blaybus.reservation.dto.ReservationMeetRequest;
+import com.blaybus.reservation.dto.ReservationRequestDto;
+import com.blaybus.reservation.dto.ReservationResponseDto;
+
+import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.service.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
@@ -18,26 +23,45 @@ public class ReservationController
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createReservation() {
-        String reservationId= reservationService.createReservation();
-        return ResponseEntity.ok("Reservation id: " + reservationId);
+    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation() {
+        return ResponseEntity.ok(reservationService.createReservation());
     }
 
     @PutMapping("/{reservationId}/mode")
-    public ResponseEntity<String> UpdateMeet(
+    public ResponseEntity<ReservationResponseDto.ReservationMeetResponse> UpdateMeet(
             @PathVariable String reservationId,
-            @RequestBody ReservationMeetRequest request)
+            @RequestBody ReservationRequestDto.ReservationMeetRequest request)
     {
-        reservationService.updateReservationMeet(reservationId,request.isMeet());
-        return ResponseEntity.ok("Reservation id: " + reservationId);
+        return ResponseEntity.ok(reservationService.updateReservationMeet(reservationId,request.isMeet()));
     }
+
+
     @PutMapping("/{reservationId}/designer")
-    public ResponseEntity<String> selectDeginer(
+    public ResponseEntity<ReservationResponseDto.ReservationDesignerResponse> selectDesigner(
             @PathVariable String reservationId,
-            @RequestParam String designerId)
+            @RequestBody ReservationRequestDto.ReservationDesignerIdRequest request)
     {
-        reservationService.updateReservationDesigner(reservationId,designerId);
-        return ResponseEntity.ok("Reservation id: " + reservationId);
+        return ResponseEntity.ok(reservationService.updateReservationDesigner(reservationId,request));
     }
+
+
+    @PutMapping("/{reservationId}/designer/date")
+    public ResponseEntity<Reservation> selectDateAndTime(
+            @PathVariable String reservationId,
+            @RequestBody ReservationRequestDto.ReservationDateAndTimeRequest request)
+    {
+        return ResponseEntity.ok(reservationService.updateReservationDateAndTime(reservationId,request));
+    }
+
+
+    @GetMapping("/{designerId}/available")
+    public ResponseEntity<ReservationResponseDto.ReservationTimeResponse> getReservationsByDesignerAndDate(
+            @PathVariable String designerId,
+            @RequestBody ReservationRequestDto.ReservationDateRequest request) {
+
+        return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(designerId, request));
+    }
+
+
 
 }
