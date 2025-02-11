@@ -59,8 +59,18 @@ public class DesignerService
     }
     public Designer getOneDesigner(String designerId)
     {
-        return designerRepository.findOneById(designerId);
+        return findDesignerOrThrow(designerId);
     }
+
+    public void processUpdateTimeTable(Designer designer){
+        designerRepository.save(designer);
+    }
+
+    public Designer findDesignerOrThrow(String designerId){
+        return designerRepository.findById(designerId)
+                .orElseThrow(() -> new RuntimeException());
+    }
+
 
 
 
