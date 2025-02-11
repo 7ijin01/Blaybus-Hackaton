@@ -39,7 +39,7 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
     public Designer findOneById(String designerId) {
         Query query=new Query();
         query.addCriteria(Criteria.where("id").is(designerId));
-        return MongoRepositoryUtil.findOneById(mongoTemplate, designerId, Designer.class);
+        return mongoTemplate.findOne(query, Designer.class);
     }
 
 
