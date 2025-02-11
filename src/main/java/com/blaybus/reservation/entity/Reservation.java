@@ -1,12 +1,15 @@
 package com.blaybus.reservation.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Document(collection = "reservations")
@@ -25,9 +28,9 @@ public class Reservation
     private String userId;
     private String designerId;
     private Boolean meet;
-    private Date data;
-    private Date start;
-    private Date end;
+    private LocalDate date;
+    private LocalTime start;
+    private LocalTime end;
     private String shop;
     private String price;
 
