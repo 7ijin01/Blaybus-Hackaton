@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://34.70.26.180:27017/
+      uri: mongodb+srv://gijin22:qIkwtBVNuVzPHOht@cluster0.uwirm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: blaybus
   security:
     oauth2:
