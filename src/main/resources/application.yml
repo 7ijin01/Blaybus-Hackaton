@@ -13,14 +13,14 @@ spring:
             scope:
               - profile
               - email
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            #redirect-uri: "{baseUrl}/login/oauth2/code/google"
 
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+        #provider:
+         # google:
+          #  authorization-uri: https://accounts.google.com/o/oauth2/auth
+           # token-uri: https://oauth2.googleapis.com/token
+            #user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            #jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 
 jwt:
   issuer: am030818@naver.com
@@ -29,10 +29,10 @@ jwt:
   refresh-expiration: 8640
 
 server:
-  port: 8443
-  ssl:
-    enabled: true
-    key-store: /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12
-    key-store-password: blaybus
-    key-store-type: PKCS12
-    key-alias: blaybus
+  port: 8080
+  #ssl:
+    #enabled: true
+    #key-store: /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12
+    #key-store-password: blaybus
+    #key-store-type: PKCS12
+    #key-alias: blaybus
