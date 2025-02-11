@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,17 +23,27 @@ public class ReservationService
     private final DesignerService designerService;
     private final JwtUtil jwtUtil;
     //유저 코드 생성이후 연동할 예정
-    public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
-        String userName = jwtUtil.getName(accessToken);
-        String googleId = jwtUtil.getEmail(accessToken);
+
+    public ReservationResponseDto.ReservationResponse createReservation(ReservationRequestDto.ReservationRequest request) {
+        //String userName = jwtUtil.getName(accessToken);
+        //String googleId = jwtUtil.getEmail(accessToken);
+        Designer designer = designerService.getOneDesigner(request.getDesignerId());
+        System.out.println(request.getDesignerId());
+        System.out.println(designer);
+
+        Map<String, String> newReservation = new HashMap<>();
+        newReservation.put("start", request.getStart()); // "HH:mm" 형태의 시작 시간
+        newReservation.put("end", request.getEnd());     // "HH:mm" 형태의 끝나는 시간
+
+        designer.setTimeTable(request.getDate(), newReservation);
+        designerService.processUpdateTimeTable(designer);
+
         Reservation reservation = new Reservation();
-        reservation.setUserId(googleId);
+        reservation.setUserId("103066378037959369997");
         reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus("PENDING");
         reservationRepository.save(reservation);
         return new ReservationResponseDto.ReservationResponse(reservation.getId(),reservation.getStatus());
-
-
     }
 
     public ReservationResponseDto.ReservationMeetResponse updateReservationMeet(String reservationId, Boolean meet)
@@ -110,4 +117,23 @@ public class ReservationService
         return reservation;
     }
 
+    public void deleteReservationById(String reservationId, String designerId){
+        Reservation reservation = reservationRepository.findOneById(reservationId);
+        Designer designer = designerService.getOneDesigner(designerId);
+
+        String date = reservation.getDate().toString();
+
+
+        designer.setTimeTable(updateTimeTable(designer, date));
+
+        designerService.processUpdateTimeTable(designer);
+        reservationRepository.delete(reservation);
+    }
+
+    public Map<String, List<Map<String, String>>> updateTimeTable(Designer designer, String date){
+        Map<String, List<Map<String, String>>> timeTable = designer.getTimeTable();
+        List<Map<String, String>> dayTable = timeTable.getOrDefault(date, null);
+        timeTable.remove(date, dayTable);
+        return timeTable;
+    }
 }
