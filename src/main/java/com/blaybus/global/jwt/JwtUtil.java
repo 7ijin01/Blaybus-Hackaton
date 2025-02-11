@@ -35,12 +35,11 @@ public class JwtUtil {
 
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                .get("email", String.class);
+                .get("googleId", String.class);
     }
-
-    public String getRole(String token) {
+    public String getName(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-                .get("role", String.class);
+                .get("name", String.class);
     }
 
 
@@ -60,22 +59,20 @@ public class JwtUtil {
         }
     }
 
-    public String createAccess(String email) {
-        System.out.println(email);
+    public String createAccess(String googleId, String name) {
         return Jwts.builder()
-                .claim("category", "access")
-                .claim("email", email)
-                .claim("role", "ROLE_MANAGER")
+                .claim("email", googleId)
+                .claim("name", name)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(secretKey)
                 .compact();
     }
 
-    public String createRefresh(String email) {
+    public String createRefresh(String googleId, String name) {
         return Jwts.builder()
-                .claim("category", "refresh")
-                .claim("email", email)
+                .claim("email", googleId)
+                .claim("name", name)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(secretKey)

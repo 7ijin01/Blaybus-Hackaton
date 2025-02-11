@@ -1,5 +1,6 @@
 package com.blaybus.global.oauth2.handler;
 
+import com.blaybus.global.jwt.JwtUtil;
 import com.blaybus.global.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.blaybus.global.oauth2.service.OAuth2UserPrincipal;
 import com.blaybus.global.oauth2.user.OAuth2Provider;
@@ -28,6 +29,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
+    private final JwtUtil jwtUtil;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,13 +41,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             return;
         }
 
-        // ✅ 무한 리다이렉션 방지: OAuth 요청 정보를 세션에서 제거
         clearAuthenticationAttributes(request, response);
 
-        // ✅ 액세스 토큰을 URL이 아닌 쿠키에 저장하여 URL을 깔끔하게 유지
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
+        String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+        System.out.println(access);
+
         if (principal != null) {
-            CookieUtils.addCookie(response, "access_token", "test_access_token", 3600); // 1시간 유효
+            CookieUtils.addCookie(response, "access_token", access, 3600); // 1시간 유효
             CookieUtils.addCookie(response, "refresh_token", "test_refresh_token", 86400); // 1일 유효
         }
 
