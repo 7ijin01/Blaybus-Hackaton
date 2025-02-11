@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
+@CrossOrigin("*")
 public class ReservationController
 {
     //TODO:로그인 후 유저정보 연동
