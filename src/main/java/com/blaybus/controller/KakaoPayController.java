@@ -1,11 +1,14 @@
 package com.blaybus.controller;
 
+import com.blaybus.dto.KakaoApproveResponseDTO;
 import com.blaybus.dto.KakaoPayReadyResponseDTO;
+import com.blaybus.exception.BusinessLogicException;
+import com.blaybus.exception.ExceptionCode;
 import com.blaybus.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/payment")
@@ -20,5 +23,39 @@ public class KakaoPayController {
     @PostMapping("/ready")
     public KakaoPayReadyResponseDTO readyToKakaoPay() {
         return kakaoPayService.kakaoPayReady();
+    }
+
+    /**
+     * 결제 성공
+     */
+    @PostMapping("/success")
+    public ResponseEntity<KakaoApproveResponseDTO> afterPayRequest(@RequestParam("pg_token") String pgToken) {
+        KakaoApproveResponseDTO kakaoApprove = kakaoPayService.approveResponse(pgToken);
+
+        return new ResponseEntity<>(kakaoApprove, HttpStatus.OK);
+    }
+
+    /**
+     * 결제 진행 중 취소
+     */
+    @GetMapping("/cancel")
+    public void cancel() {
+        throw new BusinessLogicException(ExceptionCode.PAY_CANCEL);
+    }
+
+    /**
+     * 결제 실패
+     */
+    @GetMapping("fail")
+    public void fail() {
+        throw new BusinessLogicException(ExceptionCode.PAY_FAILED);
+    }
+
+    /**
+     * 예외 처리: BusinessLogicException 처리
+     */
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<String> handleBusinessLogicException(BusinessLogicException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.valueOf(ex.getStatusCode()));
     }
 }

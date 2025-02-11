@@ -1,6 +1,7 @@
 package com.blaybus.service;
 
 import com.blaybus.KakaoPayProperties;
+import com.blaybus.dto.KakaoApproveResponseDTO;
 import com.blaybus.dto.KakaoPayReadyResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class KakaoPayService {
     private KakaoPayReadyResponseDTO kakaoReady;
 
     // https://developers.kakaopay.com/docs/payment/online/single-payment#payment-ready-request-syntax
-    private HttpHeaders getHeaders() {  // 카카오페이 api : Request Syntax 참고
+    private HttpHeaders getHeaders() {  // 카카오페이 api : 헤더 설정 (Request Syntax 참고)
         HttpHeaders headers = new HttpHeaders();
         String auth = "SECRET_KEY " + payProperties.getSecretKey();  // "SECRET_KEY " 앞에 공백 필수
         headers.set("Authorization", auth);
@@ -33,7 +34,7 @@ public class KakaoPayService {
     }
 
     /*
-     * 아래 예시에 맞게 결제 요청 보내기
+     * 아래 예시에 맞게 결제 준비 요청 보내기
      * */
     // https://developers.kakaopay.com/docs/payment/online/single-payment#payment-ready-sample-request
     public KakaoPayReadyResponseDTO kakaoPayReady() {
@@ -67,4 +68,45 @@ public class KakaoPayService {
         log.info("카카오페이 결제 준비 응답: {}", kakaoReady);  // 응답 확인
         return kakaoReady;
     }
+
+
+    /**
+     * 결제 완료 승인
+     */
+    public KakaoApproveResponseDTO approveResponse(String pgToken) {
+
+        // 카카오 결제 승인 요청
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cid", payProperties.getCid());
+        parameters.put("tid", kakaoReady.getTid());  // 이전에 준비된 TID
+        parameters.put("partner_order_id", "1");  // 실제 주문 ID로 교체
+        parameters.put("partner_user_id", "1");  // 실제 사용자 ID로 교체
+        parameters.put("pg_token", pgToken);  // 카카오에서 받은 pg_token
+
+        // 파라미터, 헤더 설정
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+        System.out.println();
+        System.out.println();
+        System.out.println(requestEntity);
+        System.out.println();
+        System.out.println();
+
+        // 외부에 보낼 url
+        RestTemplate restTemplate = new RestTemplate();
+        KakaoApproveResponseDTO approveResponse = restTemplate.postForObject(
+                "https://open-api.kakaopay.com/online/v1/payment/approve",
+                requestEntity,
+                KakaoApproveResponseDTO.class);
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println(approveResponse);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+        return approveResponse;
+    }
+
 }
