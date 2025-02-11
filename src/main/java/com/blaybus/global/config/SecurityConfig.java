@@ -71,7 +71,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("https://blaybus-glowup.com", "http://localhost:63342", "https://34.70.26.180:8443"));  // 클라우드 도메인 허용
+        config.setAllowedOrigins(List.of("https://blaybus-glowup.com", "*", "https://34.70.26.180:8443"));  // 클라우드 도메인 허용
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         source.registerCorsConfiguration("/**", config);
