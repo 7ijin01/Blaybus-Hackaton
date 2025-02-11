@@ -1,11 +1,38 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/
+      uri: mongodb+srv://gijin22:qIkwtBVNuVzPHOht@cluster0.uwirm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: blaybus
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-#    mongodb:
-#      uri: mongodb://34.70.26.180:27017/
-#      database: blaybus
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+
+jwt:
+  issuer: am030818@naver.com
+  secret: "jfsgkhdsjkweoiruwqejkrfbhnsadkjlfghbwerqewrsdfgdsfagbdf"
+  access-expiration: 3600
+  refresh-expiration: 8640
+
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12
+    key-store-password: blaybus
+    key-store-type: PKCS12
+    key-alias: blaybus
