@@ -43,5 +43,18 @@ public class ReservationRequestDto
         private LocalTime time;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    public static class ReservationRequest
+    {
+        private String designerId;
+        private String date;
+        private String start;
+        private String end;
+    }
+
+
+
 
 }
