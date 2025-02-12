@@ -1,14 +1,13 @@
 package com.blaybus.glowup_backend.controller;
 
-import com.blaybus.glowup_backend.service.ReservationService;
+import com.blaybus.glowup_backend.model.Reservations;
+import com.blaybus.glowup_backend.service.reservation.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -26,12 +25,8 @@ public class ReservationController {
 
     @GetMapping("")
     public ResponseEntity<?> readList(@RequestParam String userId) {
-        log.info("readList={}", userId);
-        Map<String, Object> param = new HashMap<>();
-        param.put("userId",userId);
-        log.info("param={}", param);
-
-        List<String> reservationList = reservationService.read(param);
+        log.info("readList userId={}", userId);
+        List<Reservations> reservationList = reservationService.findByUserId(userId);
         log.info("reservationList={}", reservationList);
         return ResponseEntity.ok(reservationList);
     }
