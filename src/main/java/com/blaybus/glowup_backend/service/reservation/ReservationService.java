@@ -27,7 +27,7 @@ public class ReservationService {
             return new ArrayList<>();
         }
         List<Reservations> list = mongoTemplate.find(
-                new Query(Criteria.where("userId").is(userId)), Reservations.class);
+                new Query(Criteria.where("userId").is(userId)), Reservations.class); // 기준 잡아서 시간 순으로 조회 되는 부분 추가하기
         log.info("list={}", list);
         return list;
     }
