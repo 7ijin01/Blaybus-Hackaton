@@ -96,6 +96,7 @@ public class JwtUtil {
         Claims claims = extractClaims(token);
 
         String googleId = claims.getSubject();  // ✅ JWT의 "sub" 값을 googleId로 가져옴
+        System.out.println(googleId);
         if (googleId == null || googleId.isEmpty()) {
             throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
         }
