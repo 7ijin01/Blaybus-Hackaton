@@ -49,6 +49,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (principal != null) {
             String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
             String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+            System.out.println(access);
+            System.out.println(refresh);
             CookieUtils.addCookie(response, "access_token", access, 3600); // 1시간 유효
             CookieUtils.addCookie(response, "refresh_token", refresh, 86400); // 1일 유효
         }
