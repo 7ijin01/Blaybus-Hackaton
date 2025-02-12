@@ -56,63 +56,37 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             log.info("✅ 쿠키 추가 완료!");
         }
+
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) {
-
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
-
-        System.out.println(redirectUri);
-
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
-        System.out.println("targetUrl: " + targetUrl);
 
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse("");
 
-        System.out.println("mode: " + mode);
-
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-
         if (principal == null) {
+            log.error("❌ principal이 null입니다. 로그인 실패로 처리.");
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("error", "Login failed")
                     .build().toUriString();
         }
 
-        if ("login".equalsIgnoreCase(mode)) {
-            // TODO: DB 저장
-            // TODO: 액세스 토큰, 리프레시 토큰 발급
-            // TODO: 리프레시 토큰 DB 저장
-            log.info("email={}, name={}, nickname={}, accessToken={}", principal.getUserInfo().getEmail(),
-                    principal.getUserInfo().getName(),
-                    principal.getUserInfo().getNickname(),
-                    principal.getUserInfo().getAccessToken()
-            );
+        log.info("🔹 로그인 성공: mode={}, email={}", mode, principal.getUserInfo().getEmail());
 
+        if ("login".equalsIgnoreCase(mode)) {
             String accessToken = "test_access_token";
             String refreshToken = "test_refresh_token";
 
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("access_token", accessToken)
                     .queryParam("refresh_token", refreshToken)
-                    .build().toUriString();
-
-        } else if ("unlink".equalsIgnoreCase(mode)) {
-
-            String accessToken = principal.getUserInfo().getAccessToken();
-            OAuth2Provider provider = principal.getUserInfo().getProvider();
-
-            // TODO: DB 삭제
-            // TODO: 리프레시 토큰 삭제
-            oAuth2UserUnlinkManager.unlink(provider, accessToken);
-
-            return UriComponentsBuilder.fromUriString(targetUrl)
                     .build().toUriString();
         }
 
