@@ -2,8 +2,10 @@ package com.blaybus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class BlaybusApplication {
 
 	public static void main(String[] args) {
