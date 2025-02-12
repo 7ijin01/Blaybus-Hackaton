@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://gijin22:qIkwtBVNuVzPHOht@cluster0.uwirm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: blaybus
