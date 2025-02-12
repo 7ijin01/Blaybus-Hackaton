@@ -2,21 +2,24 @@ package com.blaybus.global.jwt;
 
 
 
+import com.blaybus.domain.register.entity.User;
+import com.blaybus.domain.register.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 @Component
 public class JwtUtil {
@@ -26,11 +29,13 @@ public class JwtUtil {
 
     //객체 키 생성
     private SecretKey secretKey;
+    private final UserRepository userRepository;
 
     //검증 메서드
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
+    public JwtUtil(@Value("${jwt.secret}") String secret, UserRepository userRepository) {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
+        this.userRepository = userRepository;
     }
 
     public String getEmail(String token) {
@@ -61,7 +66,7 @@ public class JwtUtil {
 
     public String createAccess(String googleId, String name) {
         return Jwts.builder()
-                .claim("email", googleId)
+                .claim("googleId",googleId)
                 .claim("name", name)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
@@ -71,7 +76,7 @@ public class JwtUtil {
 
     public String createRefresh(String googleId, String name) {
         return Jwts.builder()
-                .claim("email", googleId)
+                .claim("googleId", googleId)
                 .claim("name", name)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
@@ -90,9 +95,26 @@ public class JwtUtil {
     public Authentication getAuthentication(String token) {
         Claims claims = extractClaims(token);
 
-        UserDetails user = new User(claims.getSubject(), "", Collections.emptyList());
+        String googleId = claims.getSubject();  // ✅ JWT의 "sub" 값을 googleId로 가져옴
+        if (googleId == null || googleId.isEmpty()) {
+            throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
+        }
 
-        return new UsernamePasswordAuthenticationToken(user, "", Collections.emptyList());
+        // DB에서 googleId 기반으로 사용자 찾기
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByGoogleId(googleId));
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("User not found with googleId: " + googleId);
+        }
+
+        User user = userOptional.get();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        // Spring Security User 객체 생성 (googleId를 username으로 사용)
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                user.getGoogleId(), "", authorities
+        );
+
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
 //    public String processToken(String accessToken, HttpServletRequest request){
