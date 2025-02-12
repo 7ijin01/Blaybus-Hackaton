@@ -49,10 +49,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (principal != null) {
             String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
             String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
-            System.out.println(access);
-            System.out.println(refresh);
-            CookieUtils.addCookie(response, "access_token", access, 3600); // 1시간 유효
-            CookieUtils.addCookie(response, "refresh_token", refresh, 86400); // 1일 유효
+            log.info("🍪 쿠키 추가 시작: access_token={}, refresh_token={}", access, refresh);
+
+            CookieUtils.addCookie(response, "access_token", access, 3600);
+            CookieUtils.addCookie(response, "refresh_token", refresh, 86400);
+
+            log.info("✅ 쿠키 추가 완료!");
         }
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
