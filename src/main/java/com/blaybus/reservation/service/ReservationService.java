@@ -7,13 +7,11 @@ import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +31,7 @@ public class ReservationService
         reservation.setUserId("3");
         reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus("PENDING");
+        reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
         return new ReservationResponseDto.ReservationResponse(reservation.getId(),reservation.getStatus());
 
@@ -59,6 +58,7 @@ public class ReservationService
         }
         String designerId=request.getDesignerId();
         Designer designer= designerService.getOneDesigner(designerId);
+
         if (designer == null) {
             throw new IllegalArgumentException("no designerss" + designerId);
         }

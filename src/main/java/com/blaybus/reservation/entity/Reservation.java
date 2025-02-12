@@ -4,6 +4,8 @@ package com.blaybus.reservation.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import nonapi.io.github.classgraph.json.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -34,7 +36,11 @@ public class Reservation
     private String shop;
     private String price;
 
-
     private String status;// "PENDING", "CONFIRMED", "CANCELED"
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private Date createdAt;
+
+
 
 }
