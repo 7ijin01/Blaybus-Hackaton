@@ -36,7 +36,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                         Authentication authentication) throws IOException {
 
         String targetUrl = determineTargetUrl(request, response);
-        System.out.println(targetUrl);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -65,11 +64,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
+        System.out.println(redirectUri);
+
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+
+        System.out.println("targetUrl: " + targetUrl);
 
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse("");
+
+        System.out.println("mode: " + mode);
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
 
