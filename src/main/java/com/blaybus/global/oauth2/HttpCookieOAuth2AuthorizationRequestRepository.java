@@ -42,18 +42,18 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
 
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URI_PARAM_COOKIE_NAME);
         if (StringUtils.hasText(redirectUriAfterLogin)) {
-            CookieUtils.addCookie(response,
-                    REDIRECT_URI_PARAM_COOKIE_NAME,
-                    redirectUriAfterLogin,
-                    COOKIE_EXPIRE_SECONDS);
+            CookieUtils.addCookie(response, REDIRECT_URI_PARAM_COOKIE_NAME, redirectUriAfterLogin, COOKIE_EXPIRE_SECONDS);
+            System.out.println("redirect_uri 쿠키 저장됨: " + redirectUriAfterLogin);
+        } else {
+            System.out.println("redirect_uri 쿠키가 없음");
         }
 
         String mode = request.getParameter(MODE_PARAM_COOKIE_NAME);
         if (StringUtils.hasText(mode)) {
-            CookieUtils.addCookie(response,
-                    MODE_PARAM_COOKIE_NAME,
-                    mode,
-                    COOKIE_EXPIRE_SECONDS);
+            CookieUtils.addCookie(response, MODE_PARAM_COOKIE_NAME, mode, COOKIE_EXPIRE_SECONDS);
+            System.out.println("mode 쿠키 저장됨: " + mode);
+        } else {
+            System.out.println("mode 쿠키가 없음");
         }
     }
 
