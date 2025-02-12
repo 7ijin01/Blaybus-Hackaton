@@ -5,6 +5,9 @@ import com.blaybus.dto.KakaoApproveRequestDTO;
 import com.blaybus.dto.KakaoApproveResponseDTO;
 import com.blaybus.dto.KakaoPayReadyResponseDTO;
 import com.blaybus.dto.KakaoPayRequestDTO;
+import com.blaybus.entity.PaymentEntity;
+import com.blaybus.entity.enums.PaymentStatus;
+import com.blaybus.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +26,7 @@ import java.util.Map;
 @Slf4j
 public class KakaoPayService {
 
+    private final PaymentRepository paymentRepository;
     private final KakaoPayProperties payProperties;
     private final RestTemplate restTemplate;
     private KakaoPayReadyResponseDTO kakaoReady;
@@ -97,6 +102,17 @@ public class KakaoPayService {
                 "https://open-api.kakaopay.com/online/v1/payment/approve",
                 requestEntity,
                 KakaoApproveResponseDTO.class);
+
+        // 결제 정보 저장 코드 추가
+        PaymentEntity payment = PaymentEntity.builder()
+                .userId(requestDTO.getPartnerUserId())
+                .reservationId(requestDTO.getPartnerOrderId())
+                .status(PaymentStatus.SUCCESS)
+                .amount(Double.parseDouble(String.valueOf(approveResponse.getAmount().getTotal())))
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        paymentRepository.save(payment);  // MongoDB에 저장
 
         System.out.println();
         System.out.println();
