@@ -35,7 +35,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String targetUrl = determineTargetUrl(request, response, authentication);
+        String targetUrl;
+
+        targetUrl = determineTargetUrl(request, response, authentication);
+
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -44,9 +47,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         clearAuthenticationAttributes(request, response);
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-        System.out.println(principal.getUsername());
-        System.out.println(principal.getUserInfo().getEmail());
-        System.out.println(principal.getUserInfo().getName());
         String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
         String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
 
@@ -54,7 +54,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             CookieUtils.addCookie(response, "access_token", access, 3600); // 1시간 유효
             CookieUtils.addCookie(response, "refresh_token", refresh, 86400); // 1일 유효
         }
-
+        clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
