@@ -3,6 +3,7 @@ package com.blaybus.reservation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class ReservationRequestDto
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReservationDesignerIdRequest
     {
         private String designerId;
@@ -22,6 +24,7 @@ public class ReservationRequestDto
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReservationMeetRequest
     {
         private boolean meet;
@@ -30,6 +33,7 @@ public class ReservationRequestDto
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReservationDateRequest
     {
         private LocalDate date;
@@ -37,6 +41,7 @@ public class ReservationRequestDto
     @Getter
     @Setter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReservationDateAndTimeRequest
     {
         private LocalDate date;
