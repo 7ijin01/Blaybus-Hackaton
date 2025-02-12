@@ -1,11 +1,18 @@
 package com.blaybus.entity;
 
+import com.blaybus.entity.enums.MeetingType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Document(collection = "designer")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class DesignerEntity {
     @Id
     private String id;
@@ -13,10 +20,10 @@ public class DesignerEntity {
     private String name;
     private String region;
     private String address;
-    private String priceMeet;
-    private String priceNotMeet;
+    private double priceMeet;
+    private double priceNotMeet;
     private String profile;
     private String field;  // JSON 형태로 저장
     private String introduction;
-    private int meet;  // 0: 비대면, 1: 대면, 2: 둘 다
+    private MeetingType meet;
 }

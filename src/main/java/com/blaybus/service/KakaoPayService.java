@@ -23,6 +23,7 @@ import java.util.Map;
 public class KakaoPayService {
 
     private final KakaoPayProperties payProperties;
+    private final RestTemplate restTemplate;
     private KakaoPayReadyResponseDTO kakaoReady;
 
     // https://developers.kakaopay.com/docs/payment/online/single-payment#payment-ready-request-syntax
@@ -60,8 +61,6 @@ public class KakaoPayService {
 
 
         // 외부에 보낼 url
-        RestTemplate restTemplate = new RestTemplate();
-
         kakaoReady = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/ready",
                 requestEntity,
@@ -94,7 +93,6 @@ public class KakaoPayService {
         System.out.println();
 
         // 외부에 보낼 url
-        RestTemplate restTemplate = new RestTemplate();
         KakaoApproveResponseDTO approveResponse = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/approve",
                 requestEntity,

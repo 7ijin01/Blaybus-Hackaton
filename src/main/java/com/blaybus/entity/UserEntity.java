@@ -1,16 +1,21 @@
 package com.blaybus.entity;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Data
-@Document(collection = "user")
+@Document(collection = "user")  // // MongoDB 컬렉션 이름 지정
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserEntity {
     @Id
-    private String id;
+    private String id; // MongoDB의 기본 키 (ObjectId)
 
-    private String googleId;
-    private String name;
-    private String gender;
+    private String googleId; // Google OAuth ID
+    private String name; // 사용자 이름
+    private String gender; // 성별 ("M", "F" 또는 기타)
+
 }
