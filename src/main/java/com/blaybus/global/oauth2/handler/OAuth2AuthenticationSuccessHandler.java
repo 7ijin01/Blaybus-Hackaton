@@ -35,7 +35,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String targetUrl = "https://kamillcream.github.io/";
+        String targetUrl = determineTargetUrl(request, response);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -44,6 +44,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         clearAuthenticationAttributes(request, response);
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
+        System.out.println(principal.getUsername());
+        System.out.println(principal.getUserInfo().getEmail());
+        System.out.println(principal.getUserInfo().getId());
         String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
         String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
 

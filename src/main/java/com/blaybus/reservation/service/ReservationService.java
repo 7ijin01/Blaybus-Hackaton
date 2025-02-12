@@ -29,6 +29,7 @@ public class ReservationService
     public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
         String userName = jwtUtil.getName(accessToken);
         String googleId = jwtUtil.getEmail(accessToken);
+
         Reservation reservation = new Reservation();
         reservation.setUserId(googleId);
         reservation.setId(UUID.randomUUID().toString());
