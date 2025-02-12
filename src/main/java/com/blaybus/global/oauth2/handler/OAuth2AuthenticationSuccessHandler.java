@@ -36,6 +36,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                         Authentication authentication) throws IOException {
 
         String targetUrl = determineTargetUrl(request, response);
+        System.out.println(targetUrl);
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -46,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
         System.out.println(principal.getUsername());
         System.out.println(principal.getUserInfo().getEmail());
-        System.out.println(principal.getUserInfo().getId());
+        System.out.println(principal.getUserInfo().getName());
         String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
         String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
 
