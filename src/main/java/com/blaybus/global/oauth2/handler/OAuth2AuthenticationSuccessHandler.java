@@ -45,14 +45,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
         String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
-        System.out.println(access);
+        String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
 
         if (principal != null) {
             CookieUtils.addCookie(response, "access_token", access, 3600); // 1시간 유효
-            CookieUtils.addCookie(response, "refresh_token", "test_refresh_token", 86400); // 1일 유효
+            CookieUtils.addCookie(response, "refresh_token", refresh, 86400); // 1일 유효
         }
 
-        // ✅ URL에 토큰을 포함하지 않고 클라이언트가 쿠키에서 읽도록 리다이렉트
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
