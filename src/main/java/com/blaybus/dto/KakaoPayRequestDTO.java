@@ -3,7 +3,7 @@ package com.blaybus.dto;
 import lombok.Data;
 
 @Data
-public class KakaoPayRequestDTO {  // 결제 요청에 필요한 데이터 담는 dto
+public class KakaoPayRequestDTO {  // 결제 요청에 필요한 데이터 담는 DTO
     private String partnerOrderId;  // 주문 id
     private String partnerUserId;  // 사용자 id
     private String itemName;  // 상품명

@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class KakaoApproveResponseDTO {  // 결제 승인 요청 시 사용
+public class KakaoApproveResponseDTO {  // 카카오페이 결제 승인 응답 DTO
     private String aid;  // 요청 고유 번호
     private String tid;  // 결제 고유 번호
     private String cid;  // 가맹점 코드
