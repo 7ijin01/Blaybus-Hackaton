@@ -64,7 +64,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (existingUser == null){
             User user = User.builder()
-                    .googleId(oAuth2UserInfo.getId())
+                    .googleId(oAuth2UserInfo.getEmail())
                     .name(oAuth2UserInfo.getName())
                     .gender("Unknown") // 기본값 설정
                     .build();
