@@ -23,6 +23,10 @@ public class DesignerService
 
     public List<Designer> getDesignersByRegionAndPrice(Integer maxPrice,List<String> region)
     {
+        if (maxPrice == null || region == null || region.isEmpty()) {
+            throw new IllegalArgumentException("가격 또는 지역 정보가 올바르지 않습니다.");
+        }
+
         List<Designer> filteredList=designerRepository.findAllByPriceAndRegion(maxPrice,region);
 
         return  filteredList;
@@ -30,6 +34,9 @@ public class DesignerService
     }
     public Map<String, List<Designer>> filterdDesignersWithMeet(List<Designer> filteredList)
     {
+        if (filteredList == null) {
+            throw new IllegalArgumentException("디자이너 목록이 null입니다.");
+        }
 
         Map<String ,List<Designer>> sortMap =new HashMap<>();
 
@@ -59,7 +66,8 @@ public class DesignerService
     }
     public Designer getOneDesigner(String designerId)
     {
-        return designerRepository.findOneById(designerId);
+        return Optional.ofNullable(designerRepository.findOneById(designerId))
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 디자이너를 찾을 수 없습니다: " + designerId));
     }
 
 }
