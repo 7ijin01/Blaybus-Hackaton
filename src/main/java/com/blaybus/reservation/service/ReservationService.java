@@ -7,6 +7,7 @@ import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService
 {
     private final ReservationRepository reservationRepository;
@@ -29,6 +31,8 @@ public class ReservationService
     public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
         String userName = jwtUtil.getName(accessToken);
         String googleId = jwtUtil.getEmail(accessToken);
+        log.info("userName: {}", userName);
+        log.info("googleId: {}", googleId);
 
         Reservation reservation = new Reservation();
         reservation.setUserId(googleId);
