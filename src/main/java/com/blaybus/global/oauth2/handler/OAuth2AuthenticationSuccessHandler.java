@@ -35,33 +35,37 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
+        // 🔹 프론트엔드 리디렉션 URL 가져오기
+        String targetUrl = determineTargetUrl(request, response, authentication);
+
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-        if (principal == null) {
-            response.sendRedirect("https://vercel-test-pi-one-93.vercel.app?error=Login failed");
+        if (principal != null) {
+            String accessToken = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+            String refreshToken = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+
+            // ✅ 쿠키 설정
+            CookieUtils.addCookie(response, "access_token", accessToken, 3600);
+            CookieUtils.addCookie(response, "refresh_token", refreshToken, 86400);
+
+            log.info("✅ OAuth 로그인 성공! 쿠키 설정 완료! 리디렉션 실행: {}", targetUrl);
+        }
+
+        if (response.isCommitted()) {
+            log.debug("Response has already been committed. Unable to redirect to {}", targetUrl);
             return;
         }
 
-        String accessToken = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
-        String refreshToken = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+        clearAuthenticationAttributes(request, response);
 
-        // ✅ Set-Cookie 적용 (리디렉션 대신 JSON 응답)
-        CookieUtils.addCookie(response, "access_token", accessToken, 3600);
-        CookieUtils.addCookie(response, "refresh_token", refreshToken, 86400);
-
-        log.info("✅ 쿠키 설정 완료! 클라이언트가 직접 리디렉션 수행 필요");
-
-        // ✅ JSON 응답으로 프론트엔드에 리디렉션 주소 전달
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write("{\"status\": \"success\", \"redirect\": \"https://vercel-test-pi-one-93.vercel.app\"}");
+        // ✅ 프론트엔드로 리디렉션 수행
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
-        System.out.println(redirectUri);
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+        String targetUrl = redirectUri.orElse("https://vercel-test-pi-one-93.vercel.app");
         System.out.println(targetUrl);
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
