@@ -65,7 +65,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                         Authentication authentication) {
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
-        String targetUrl = redirectUri.orElse("https://vercel-test-pi-one-93.vercel.app");
+        String targetUrl = redirectUri.orElse("https://front.blaybus-glowup.com");
         System.out.println(targetUrl);
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
