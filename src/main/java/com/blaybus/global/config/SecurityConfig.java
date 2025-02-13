@@ -5,6 +5,7 @@ import com.blaybus.global.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.blaybus.global.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.blaybus.global.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.blaybus.global.oauth2.service.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,11 +50,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable) // 🔹 HTTP Basic 인증 비활성화
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 🔹 401 Unauthorized 반환
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\": \"Unauthorized request\"}");
+                        })
+                )
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ OPTIONS 요청 허용
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/reservation/create").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/", "/reservation/create").permitAll() // ✅ 예약 생성 엔드포인트 허용
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
