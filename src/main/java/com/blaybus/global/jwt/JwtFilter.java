@@ -49,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("🔍 [resolveToken] Authorization 헤더: {}", token);
 
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-            String extractedToken = token.substring(BEARER_PREFIX.length());
+            String extractedToken = token.substring(BEARER_PREFIX.length()).trim();
             log.info("🔍 [resolveToken] 추출된 JWT: {}", extractedToken);
             return extractedToken;
         }
