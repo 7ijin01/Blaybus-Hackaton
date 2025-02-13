@@ -103,7 +103,10 @@ public class JwtUtil {
     }
     public Authentication getAuthentication(String token) {
         Claims claims = extractClaims(token);
-        String googleId = claims.getSubject();  //
+        String googleId = claims.getSubject();
+        log.info("token:",token);
+        log.info("claims:", claims);
+        log.info("googleId:", googleId);
         if (googleId == null || googleId.isEmpty()) {
             throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
         }
