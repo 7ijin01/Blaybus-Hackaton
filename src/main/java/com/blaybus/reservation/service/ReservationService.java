@@ -27,12 +27,18 @@ public class ReservationService
     private final ReservationRepository reservationRepository;
     private final DesignerService designerService;
     private final JwtUtil jwtUtil;
+    private static final String BEARER_PREFIX = "Bearer ";
     //유저 코드 생성이후 연동할 예정
     public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
-        String userName = jwtUtil.getName(accessToken);
-        String googleId = jwtUtil.getEmail(accessToken);
+        String extractedToken = accessToken.substring(BEARER_PREFIX.length()).trim();
+
+        String userName = jwtUtil.getName(extractedToken);
+        String googleId = jwtUtil.getEmail(extractedToken);
+
         log.info("userName: {}", userName);
         log.info("googleId: {}", googleId);
+
+
 
         Reservation reservation = new Reservation();
         reservation.setUserId(googleId);
