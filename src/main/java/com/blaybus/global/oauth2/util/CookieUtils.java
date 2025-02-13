@@ -26,6 +26,7 @@ public class CookieUtils {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setMaxAge(maxAge);
+        cookie.setDomain(".vercel-test-pi-one-93.vercel.app");
         cookie.setHttpOnly(false);
         cookie.setSecure(true);
         cookie.setAttribute("SameSite", "None");
