@@ -36,7 +36,6 @@ public class JwtFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && !jwtUtil.isExpired(token)) {
             Authentication authentication = jwtUtil.getAuthentication(token);
             String googleId = jwtUtil.getEmail(token);
-            log.info("doFilterInternal:{}", googleId);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
