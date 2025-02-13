@@ -37,6 +37,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         String targetUrl = determineTargetUrl(request, response, authentication);
 
+        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
+        if (principal != null) {
+            String accessToken = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+            String refreshToken = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+
+            CookieUtils.addCookie(response, "access_token", accessToken, 3600);
+            CookieUtils.addCookie(response, "refresh_token", refreshToken, 86400);
+
+            log.info("✅ 쿠키 설정 완료! 리디렉션 실행: {}", targetUrl);
+        }
+
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
@@ -58,7 +69,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
         if (principal == null) {
-            log.error("❌ principal이 null입니다. 로그인 실패로 처리.");
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("error", "Login failed")
                     .build().toUriString();
