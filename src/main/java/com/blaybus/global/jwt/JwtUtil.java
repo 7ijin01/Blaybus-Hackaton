@@ -86,7 +86,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    private Claims extractClaims(String token) {
+    private Claims extractClaims(String token){
         Claims claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .build()
@@ -95,12 +95,15 @@ public class JwtUtil {
 
         log.info("🔍 [extractClaims] 디코딩된 JWT Claims: {}", claims);
 
-        if (!claims.containsKey("googleId")) {
-            throw new IllegalArgumentException("⚠️ [extractClaims] JWT에 googleId가 포함되지 않음!");
+        // ✅ googleId가 없을 경우 예외 발생 방지
+        if (!claims.containsKey("googleId") || claims.get("googleId") == null) {
+            log.error("❌ [extractClaims] JWT에 googleId가 없습니다!");
+            throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
         }
 
         return claims;
     }
+
     public Authentication getAuthentication(String token) {
         Claims claims = extractClaims(token);
         String googleId = claims.getSubject();
