@@ -8,6 +8,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Component
+@Slf4j
 public class JwtUtil {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000; // 30분
@@ -94,7 +96,7 @@ public class JwtUtil {
     }
     public Authentication getAuthentication(String token) {
         Claims claims = extractClaims(token);
-
+        log.info("claims: ", claims);
         String googleId = claims.getSubject();  // ✅ JWT의 "sub" 값을 googleId로 가져옴
         System.out.println(googleId);
         if (googleId == null || googleId.isEmpty()) {
