@@ -83,8 +83,10 @@ public class GoogleCalendarService {
 //            return "이벤트 생성 실패: " + response.getStatusCode();
 //        }
 //    }
-    public String createEventWithMeeting(String accessToken, String calendarId, GoogleMeetRequest googleMeetRequest) {
-        // 요청 바디 생성 (이벤트 정보)
+    public String createEventWithMeeting(String accessToken, GoogleMeetRequest googleMeetRequest) {
+
+        String calendarId= googleMeetRequest.getCalendarId();
+
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("summary", googleMeetRequest.getSummary());
 

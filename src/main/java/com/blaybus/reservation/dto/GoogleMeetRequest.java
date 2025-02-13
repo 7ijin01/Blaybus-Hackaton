@@ -8,7 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class GoogleMeetRequest
 {
+    private String reservationId;
 
+    private String calendarId;
     private String summary;
     private String startTime;
     private String endTime;

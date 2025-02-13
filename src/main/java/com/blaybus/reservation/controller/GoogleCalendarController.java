@@ -2,6 +2,7 @@ package com.blaybus.reservation.controller;
 
 import com.blaybus.reservation.dto.GoogleMeetRequest;
 import com.blaybus.reservation.service.GoogleCalendarService;
+import com.blaybus.reservation.service.ReservationService;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -10,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 public class GoogleCalendarController {
 
     private final GoogleCalendarService googleCalendarService;
+    private final ReservationService reservationService;
 
-    public GoogleCalendarController(GoogleCalendarService googleCalendarService) {
+
+    public GoogleCalendarController(GoogleCalendarService googleCalendarService, ReservationService reservationService) {
         this.googleCalendarService = googleCalendarService;
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/calendar-ids")
@@ -33,11 +37,12 @@ public class GoogleCalendarController {
     @PostMapping("/create-event-with-meeting")
     public String createEventWithMeeting(
             @RequestHeader("Authorization") String authorizationHeader,
-            @RequestParam("calendarId") String calendarId,
             @RequestBody GoogleMeetRequest googleMeetRequest) {
 
         String accessToken = authorizationHeader.replace("Bearer ", "");
-        return googleCalendarService.createEventWithMeeting(accessToken, calendarId,googleMeetRequest);
+        String googleMeetUrl =googleCalendarService.createEventWithMeeting(accessToken, googleMeetRequest);
+        reservationService.updateReservationGoogleMeetUri(googleMeetRequest.getReservationId(),googleMeetUrl);
+        return googleMeetUrl;
     }
 
 }

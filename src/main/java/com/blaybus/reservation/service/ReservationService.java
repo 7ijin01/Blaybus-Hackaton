@@ -109,5 +109,11 @@ public class ReservationService
         reservationRepository.save(reservation);
         return reservation;
     }
+    public void updateReservationGoogleMeetUri(String reservationId,String googleMeetUri)
+    {
+        Reservation reservation=reservationRepository.findOneById(reservationId);
+        reservation.setGoogleMeetUri(googleMeetUri);
+        reservationRepository.save(reservation);
+    }
 
 }
