@@ -41,7 +41,7 @@ public class JwtUtil {
     }
 
     public String getEmail(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getBody()
+        return Jwts.parser().verifyWith(secretKey).build().parseClaimsJws(token).getBody()
                 .get("googleId", String.class);
     }
     public String getName(String token) {
