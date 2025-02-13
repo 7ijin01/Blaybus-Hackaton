@@ -106,7 +106,7 @@ public class JwtUtil {
 
     public Authentication getAuthentication(String token) {
         Claims claims = extractClaims(token);
-        String googleId = claims.getSubject();
+        String googleId = getEmail(token);
         log.info("token:",token);
         log.info("claims:", claims);
         log.info("googleId:", googleId);
