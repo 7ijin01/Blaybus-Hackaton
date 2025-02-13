@@ -50,11 +50,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(AUTHORIZATION_HEADER);
-        log.info("resolveToken; ", token);
+        log.info("🔍 [resolveToken] Authorization 헤더: {}", token);
+
         if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
-            return token.substring(BEARER_PREFIX.length());
+            String extractedToken = token.substring(BEARER_PREFIX.length());
+            log.info("🔍 [resolveToken] 추출된 JWT: {}", extractedToken);
+            return extractedToken;
         }
 
+        log.warn("⚠️ [resolveToken] Authorization 헤더가 없거나 잘못됨");
         return null;
     }
 }
