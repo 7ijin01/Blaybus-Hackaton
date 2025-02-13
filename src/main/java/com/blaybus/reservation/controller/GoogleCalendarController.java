@@ -3,7 +3,11 @@ package com.blaybus.reservation.controller;
 import com.blaybus.reservation.dto.GoogleMeetRequest;
 import com.blaybus.reservation.service.GoogleCalendarService;
 import com.blaybus.reservation.service.ReservationService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -20,10 +24,14 @@ public class GoogleCalendarController {
     }
 
     @GetMapping("/calendar-ids")
-    public String getCalendarIds(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<Map<String, String>> getCalendarIds(@RequestHeader("Authorization") String authorizationHeader) {
 
         String accessToken = authorizationHeader.replace("Bearer ", "");
-        return googleCalendarService.getCalendarIds(accessToken);
+        String calendarId = googleCalendarService.getCalendarIds(accessToken);
+        Map<String, String> response = new HashMap<>();
+        response.put("calendarId",calendarId);
+        return ResponseEntity.ok(response);
+
     }
 
 //    @PostMapping("/create-event")
@@ -35,14 +43,19 @@ public class GoogleCalendarController {
 //        return googleCalendarService.createEvent(accessToken, calendarId);
 //    }
     @PostMapping("/create-event-with-meeting")
-    public String createEventWithMeeting(
+    public ResponseEntity<Map<String, String>> createEventWithMeeting(
             @RequestHeader("Authorization") String authorizationHeader,
             @RequestBody GoogleMeetRequest googleMeetRequest) {
 
         String accessToken = authorizationHeader.replace("Bearer ", "");
         String googleMeetUrl =googleCalendarService.createEventWithMeeting(accessToken, googleMeetRequest);
         reservationService.updateReservationGoogleMeetUri(googleMeetRequest.getReservationId(),googleMeetUrl);
-        return googleMeetUrl;
+
+        Map<String, String> response = new HashMap<>();
+        response.put("meetingLink", googleMeetUrl);
+
+        return ResponseEntity.ok(response);
     }
+
 
 }
