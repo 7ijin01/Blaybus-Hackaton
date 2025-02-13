@@ -23,8 +23,9 @@ public class ReservationController
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation() {
-        return ResponseEntity.ok(reservationService.createReservation());
+    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(@RequestHeader("Authorization") String accessToken) {
+        System.out.println(accessToken);
+        return ResponseEntity.ok(reservationService.createReservation(accessToken));
     }
 
     @PutMapping("/{reservationId}/mode")

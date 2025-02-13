@@ -35,6 +35,7 @@ public class Reservation
     private LocalTime end;
     private String shop;
     private String price;
+    private String googleMeetUri;
 
     private String status;// "PENDING", "CONFIRMED", "CANCELED"
 
