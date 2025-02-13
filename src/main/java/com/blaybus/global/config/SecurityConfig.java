@@ -72,7 +72,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://blaybus-glowup.com", "https://front.blaybus-glowup.com"));
+        configuration.setAllowedOriginPatterns(List.of("https://*.blaybus-glowup.com"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         configuration.addExposedHeader("Authorization"); // ✅ Authorization 헤더 노출
