@@ -36,10 +36,6 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("getHeader", request.getHeader("Authorization"));
         log.info("🔍 요청 URL: {}", request.getRequestURL());
         log.info("🔍 요청 메서드: {}", request.getMethod());
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         if (StringUtils.hasText(token) && !jwtUtil.isExpired(token)) {
             Authentication authentication = jwtUtil.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
