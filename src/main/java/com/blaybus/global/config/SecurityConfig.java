@@ -51,8 +51,8 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ OPTIONS 요청 허용
                         .requestMatchers("/").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers("/reservation/create").permitAll()
                         .anyRequest().authenticated()
                 )
