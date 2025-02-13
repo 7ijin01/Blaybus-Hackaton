@@ -33,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
-        log.info("token", token);
+        log.info("getHeader", request.getHeader("Authorization"));
         if (StringUtils.hasText(token) && !jwtUtil.isExpired(token)) {
             Authentication authentication = jwtUtil.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
