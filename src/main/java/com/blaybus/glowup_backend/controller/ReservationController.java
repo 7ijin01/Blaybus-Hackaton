@@ -30,4 +30,20 @@ public class ReservationController {
         log.info("reservationList={}", reservationList);
         return ResponseEntity.ok(reservationList);
     }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> delete(@RequestParam String reservationsId, String designerId) {
+        log.info("delete reservationsId={}, designerId={}", reservationsId, designerId);
+        boolean result = reservationService.delete(reservationsId, designerId);
+        log.info("result={}", result);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<?> update(@RequestParam String reservationsId, String designerId) {
+        log.info("update reservationsId={}, designerId={}", reservationsId, designerId);
+        int result = reservationService.update(reservationsId, designerId);
+        log.info("result={}", result);
+        return ResponseEntity.ok(result);
+    }
 }
