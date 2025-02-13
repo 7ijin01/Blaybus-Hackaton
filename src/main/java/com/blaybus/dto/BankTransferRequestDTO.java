@@ -16,5 +16,4 @@ public class BankTransferRequestDTO {  // 계좌이체 결제 요청 DTO
     private String accountNumber;  // 계좌번호
     private String depositorName;  // 입금자명
     private String bankName;  // 은행명
-    private LocalDateTime depositTime;  // 입금 시간
 }

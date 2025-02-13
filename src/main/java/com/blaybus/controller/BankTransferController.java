@@ -15,15 +15,19 @@ public class BankTransferController {
     // 계좌이체 결제 요청
     @PostMapping("/request")
     public ResponseEntity<String> requestBankTransfer(@RequestBody BankTransferRequestDTO requestDTO) {
-        bankTransferService.processBankTransfer(requestDTO);
-        return ResponseEntity.ok("입금 확인 중");
+        String paymentId = bankTransferService.processBankTransfer(requestDTO);
+        return ResponseEntity.ok("결제 준비 완료. 입금 대기 중. paymentId: " + paymentId); // paymentId 반환
     }
 
     // 입금 확인 처리
     @PostMapping("/confirm/{paymentId}")
     public ResponseEntity<String> confirmDeposit(@PathVariable String paymentId) {
-        bankTransferService.confirmDeposit(paymentId);
-        return ResponseEntity.ok("입금 확인 완료");
+        try {
+            bankTransferService.confirmDeposit(paymentId);
+            return ResponseEntity.ok("입금 확인 완료. 결제 완료");
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("입금 확인 실패: " + e.getMessage());
+        }
     }
 
 }
