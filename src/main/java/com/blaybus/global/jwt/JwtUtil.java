@@ -30,7 +30,7 @@ public class JwtUtil {
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7일
 
     //객체 키 생성
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
     private final UserRepository userRepository;
 
     //검증 메서드
