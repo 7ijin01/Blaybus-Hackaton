@@ -25,6 +25,7 @@ public class CookieUtils {
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
+        cookie.setDomain(".blaybus-glowup.com");
         cookie.setMaxAge(maxAge);
         cookie.setHttpOnly(false);
         cookie.setSecure(true);
