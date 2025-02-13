@@ -41,21 +41,8 @@ public class JwtUtil {
     }
 
     public String getEmail(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(secretKey) // 🔥 `setSigningKey()` 사용하여 서명 검증 수행
-                .build()
-                .parseClaimsJws(token) // ✅ `parseSignedClaims(token)` 대신 `parseClaimsJws(token)`
-                .getBody();
-
-        log.info("🔍 [getEmail] 디코딩된 JWT Claims: {}", claims);
-
-        // ✅ googleId 확인 및 반환
-        if (!claims.containsKey("googleId") || claims.get("googleId") == null) {
-            log.error("❌ [getEmail] JWT에 googleId가 없습니다!");
-            throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
-        }
-
-        return claims.get("googleId", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+                .get("googleId", String.class);
     }
     public String getName(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()

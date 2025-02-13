@@ -38,6 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info("🔍 요청 메서드: {}", request.getMethod());
         if (StringUtils.hasText(token) && !jwtUtil.isExpired(token)) {
             Authentication authentication = jwtUtil.getAuthentication(token);
+            String googleId = jwtUtil.getEmail(token);
+            log.info("doFilterInternal:", googleId);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
