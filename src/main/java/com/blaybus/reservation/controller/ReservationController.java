@@ -22,7 +22,7 @@ public class ReservationController
         this.reservationService = reservationService;
     }
 
-    @PostMapping("/create")
+    @GetMapping("/create")
     public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(@RequestHeader("Authorization") String accessToken) {
         System.out.println(accessToken);
         return ResponseEntity.ok(reservationService.createReservation(accessToken));
