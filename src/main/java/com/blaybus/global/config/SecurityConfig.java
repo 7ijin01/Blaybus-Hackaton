@@ -75,7 +75,7 @@ public class SecurityConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(List.of("https://blaybus-glowup.com", "https://front.blaybus-glowup.com", "https://34.70.26.180:8443"));  // 클라우드 도메인 허용
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
