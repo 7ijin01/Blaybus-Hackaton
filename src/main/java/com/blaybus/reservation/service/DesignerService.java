@@ -62,18 +62,4 @@ public class DesignerService
         return designerRepository.findOneById(designerId);
     }
 
-
-
-//    public List<Designer> getDesignersOnline(List<Designer> designers)
-//    {
-//        return  designerRepository.findAllByOnline(designers);
-//    }
-//    public List<Designer> getDesignersOffline(List<Designer> designers)
-//    {
-//        return  designerRepository.findAllByOffline(designers);
-//    }
-//    public List<Designer> getDesignersOnlineAndOffline(List<Designer> designers)
-//    {
-//        return  designerRepository.findAllByOnlineAndOffline(designers);
-//    }
 }
