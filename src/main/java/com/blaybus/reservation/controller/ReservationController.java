@@ -5,6 +5,7 @@ import com.blaybus.reservation.dto.ReservationResponseDto;
 
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.service.ReservationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reservation")
+@Slf4j
 public class ReservationController
 {
     //TODO:로그인 후 유저정보 연동
@@ -24,7 +26,12 @@ public class ReservationController
 
     @PostMapping("/create")
     public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(@RequestHeader("Authorization") String accessToken) {
-        System.out.println(accessToken);
+        if (accessToken == null) {
+            log.error("❌ Authorization 헤더가 존재하지 않습니다.");
+        } else {
+            log.info("✅ Authorization 헤더 값: {}", accessToken);
+        }
+
         return ResponseEntity.ok(reservationService.createReservation(accessToken));
     }
 
