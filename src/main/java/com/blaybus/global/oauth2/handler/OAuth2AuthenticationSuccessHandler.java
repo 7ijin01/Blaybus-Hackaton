@@ -43,20 +43,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         clearAuthenticationAttributes(request, response);
-
-        OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
-
-        if (principal != null) {
-            String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
-            String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
-            log.info("🍪 쿠키 추가 시작: access_token={}, refresh_token={}", access, refresh);
-
-            CookieUtils.addCookie(response, "access_token", access, 3600);
-            CookieUtils.addCookie(response, "refresh_token", refresh, 86400);
-
-            log.info("✅ 쿠키 추가 완료!");
-        }
-
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
@@ -81,12 +67,14 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         log.info("🔹 로그인 성공: mode={}, email={}", mode, principal.getUserInfo().getEmail());
 
         if ("login".equalsIgnoreCase(mode)) {
-            String accessToken = "test_access_token";
-            String refreshToken = "test_refresh_token";
+
+            String access = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+            String refresh = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+
+            CookieUtils.addCookie(response, "access_token", access, 3600);
+            CookieUtils.addCookie(response, "refresh_token", refresh, 86400);
 
             return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("access_token", accessToken)
-                    .queryParam("refresh_token", refreshToken)
                     .build().toUriString();
         }
 
