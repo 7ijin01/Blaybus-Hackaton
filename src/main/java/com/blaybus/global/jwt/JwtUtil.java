@@ -105,6 +105,7 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
+        log.info("getAuthentication: ", token);
         String googleId = getEmail(token);
         log.info("googleID: ", googleId);
         if (googleId == null || googleId.isEmpty()) {
