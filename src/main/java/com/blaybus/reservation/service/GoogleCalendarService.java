@@ -13,7 +13,7 @@ import java.util.*;
 public class GoogleCalendarService {
 
     private static final String API_URL = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
-    private static final String API_EVENT_URL = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events";
+    private static final String API_EVENT_URL = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?conferenceDataVersion=1";
     private final RestTemplate restTemplate;
 
     public GoogleCalendarService(RestTemplate restTemplate) {
@@ -117,9 +117,9 @@ public class GoogleCalendarService {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        String apiUrl = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?conferenceDataVersion=1";
 
-        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class, calendarId);
+
+        ResponseEntity<String> response = restTemplate.exchange(API_EVENT_URL, HttpMethod.POST, entity, String.class, calendarId);
 
         if (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.CREATED) {
             try {
