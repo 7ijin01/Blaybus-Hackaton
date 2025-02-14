@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,6 +34,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final JwtUtil jwtUtil;
 
+    private final OAuth2AuthorizedClientService authorizedClientService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -39,9 +44,13 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
+
         if (principal != null) {
             String accessToken = jwtUtil.createAccess(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
             String refreshToken = jwtUtil.createRefresh(principal.getUserInfo().getEmail(), principal.getUserInfo().getName());
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+            OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
+                    oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName());
 
             // ✅ 쿠키 설정
             CookieUtils.addCookie(response, "access_token", accessToken, 3600);
