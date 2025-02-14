@@ -22,16 +22,10 @@ public class DesignerService
         return designerRepository.findAll();
     }
 
-    public List<Designer> getDesignersByRegionAndPrice(Integer maxPrice,List<String> region)
+    public List<Designer> getDesignersByRegionAndPrice(Integer maxPrice,Integer minPrice,List<String> region)
     {
-        if (maxPrice == null || region == null || region.isEmpty()) {
-            throw new CustomException(ExceptionCode.INVALID_REQUEST);
-        }
-
         List<Designer> filteredList=designerRepository.findAllByPriceAndRegion(maxPrice,region);
-
         return  filteredList;
-
     }
     public Map<String, List<Designer>> filterdDesignersWithMeet(List<Designer> filteredList)
     {
