@@ -18,6 +18,10 @@ jobs:
 
 
     steps:
+      - name: Check KAKAOPAY_KEY
+        run: |
+          echo "KAKAOPAY_KEY: ${KAKAOPAY_KEY}"
+
       - name: Checkout
         uses: actions/checkout@v3
 
