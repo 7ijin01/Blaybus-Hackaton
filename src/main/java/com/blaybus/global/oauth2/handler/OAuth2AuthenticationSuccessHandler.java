@@ -40,7 +40,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        // 🔹 프론트엔드 리디렉션 URL 가져오기
+
         String targetUrl = determineTargetUrl(request, response, authentication);
 
         OAuth2UserPrincipal principal = getOAuth2UserPrincipal(authentication);
@@ -68,7 +68,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         clearAuthenticationAttributes(request, response);
 
-        // ✅ 프론트엔드로 리디렉션 수행
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
@@ -77,7 +76,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
         String targetUrl = redirectUri.orElse("https://front.blaybus-glowup.com");
-        System.out.println(targetUrl);
+
         String mode = CookieUtils.getCookie(request, MODE_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
                 .orElse("");
