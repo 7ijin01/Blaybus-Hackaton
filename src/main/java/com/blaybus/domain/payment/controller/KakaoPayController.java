@@ -27,7 +27,9 @@ public class KakaoPayController {
      */
     @Operation(summary = "카카오페이 결제 요청", description = "사용자가 카카오페이로 결제를 요청함. 테스트 할려면 application-pay.yml에 본인 카카오페이 secretKey(Dev) 발급 받아서 넣어야 함. 반환된 url(app, mobile, pc) 중 링크 복붙 해주면 카카오페이 결제 창 뜸. 결제 처리 한 다음에 승인으로 넘어가기")
     @PostMapping("/ready")
-    public KakaoPayReadyResponseDTO readyToKakaoPay(@RequestBody KakaoPayRequestDTO kakaoPayRequestDTO) {
+    public KakaoPayReadyResponseDTO readyToKakaoPay(
+            @RequestBody KakaoPayRequestDTO kakaoPayRequestDTO
+    ) {
         return kakaoPayService.kakaoPayReady(kakaoPayRequestDTO);
     }
 

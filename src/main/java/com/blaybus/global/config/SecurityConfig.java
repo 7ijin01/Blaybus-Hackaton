@@ -65,7 +65,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/reservation/create", "/designers/**", "/swagger-ui/**", "/v3/api-docs/**",
+                        .requestMatchers("/", "/reservation/create", "/designers/**",
+                                "/swagger-ui/**", "/v3/api-docs/**",
                                 "/api/oauth2/token", "/payment/**").permitAll()
                         .anyRequest().authenticated()
                 )

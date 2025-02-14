@@ -59,3 +59,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operationsSorter: method
+
+kakaopay:
+  secretKey: ${KAKAOPAY_KEY}
+  cid: TC0ONETIME
