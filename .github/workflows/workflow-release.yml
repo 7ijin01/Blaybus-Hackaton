@@ -17,6 +17,9 @@ jobs:
       KAKAOPAY_KEY: ${ secrets.KAKAOPAY_KEY }
 
 
+    script: |
+            echo "KAKAOPAY_KEY: ${KAKAOPAY_KEY}"
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -69,27 +72,27 @@ jobs:
       - name: 배포 서버에 SSH로 연결하여 배포
         uses: appleboy/ssh-action@v0.1.5
         with:
-            host: ${{ secrets.DEPLOY_SERVER_HOST }}
-            username: ${{ secrets.DEPLOY_SERVER_USER }}
-            key: ${{ secrets.DEPLOY_SSH_KEY }}
-            debug: true
-            envs: GCP_PROJECT_ID, IMAGE_NAME, IMAGE_TAG, DEPLOY_PATH, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, KAKAOPAY_KEY
-            script: |
-              sudo docker stop ${IMAGE_NAME} || true
-              sudo docker rm ${IMAGE_NAME} || true
-              
-              sudo docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev <<< '${{ secrets.GCP_SA_KEY }}'
-              sudo docker pull us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
-              
-              sudo docker run -d \
-              --name ${IMAGE_NAME} \
-              --network compose_default \
-              -p 8080:8080 \
-              -p 8443:8443 \
-              -v /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12:/etc/letsencrypt/live/blaybus-glowup.com/keystore.p12 \
-              -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
-              -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
-              -e KAKAOPAY_KEY=${KAKAOPAY_KEY} \
-              us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
+          host: ${{ secrets.DEPLOY_SERVER_HOST }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          debug: true
+          envs: GCP_PROJECT_ID, IMAGE_NAME, IMAGE_TAG, DEPLOY_PATH, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, KAKAOPAY_KEY
+          script: |
+            sudo docker stop ${IMAGE_NAME} || true
+            sudo docker rm ${IMAGE_NAME} || true
+            
+            sudo docker login -u _json_key --password-stdin https://us-central1-docker.pkg.dev <<< '${{ secrets.GCP_SA_KEY }}'
+            sudo docker pull us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
+            
+            sudo docker run -d \
+            --name ${IMAGE_NAME} \
+            --network compose_default \
+            -p 8080:8080 \
+            -p 8443:8443 \
+            -v /etc/letsencrypt/live/blaybus-glowup.com/keystore.p12:/etc/letsencrypt/live/blaybus-glowup.com/keystore.p12 \
+            -e GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID} \
+            -e GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
+            -e KAKAOPAY_KEY=${KAKAOPAY_KEY} \
+            us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
 
             
