@@ -10,7 +10,7 @@ public class GoogleMeetRequest
 {
     private String reservationId;
 
-    private String calendarId;
+    private String userId;
     private String summary;
     private String startTime;
     private String endTime;
