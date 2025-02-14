@@ -20,18 +20,51 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
     }
 
     @Override
-    public List<Designer> findAllByPriceAndRegion(Integer maxPrice, List<String> region) {
+    public List<Designer> findAllByPriceAndRegion(Integer meet,Integer maxPrice,Integer minPrice, List<String> region) {
         Query query=new Query();
-
-        if(maxPrice!=null)
+        if(meet==1)
         {
-            query.addCriteria(Criteria.where("price_meet").lte(maxPrice));
+            if(maxPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_meet").lte(maxPrice)
+                .and("meet").is(1));
+            }
+            if(minPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_meet").gte(minPrice)
+                        .and("meet").is(1));
+            }
         }
-
+        else if(meet==0)
+        {
+            if(maxPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_not_meet").lte(maxPrice)
+                        .and("meet").is(0));
+            }
+            if(minPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_not_meet").gte(minPrice)
+                        .and("meet").is(0));
+            }
+        }
+        else {
+            if(maxPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_meet").lte(maxPrice)
+                        .and("meet").is(2));
+            }
+            if(minPrice!=null)
+            {
+                query.addCriteria(Criteria.where("price_not_meet").gte(minPrice)
+                        .and("meet").is(2));
+            }
+        }
         if(region!=null && !region.isEmpty())
         {
             query.addCriteria(Criteria.where("region").in(region));
         }
+
         return mongoTemplate.find(query, Designer.class);
     }
 
