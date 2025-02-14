@@ -3,6 +3,7 @@ package com.blaybus.reservation.controller;
 import com.blaybus.reservation.dto.GoogleMeetRequest;
 import com.blaybus.reservation.service.GoogleCalendarService;
 import com.blaybus.reservation.service.ReservationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,17 +12,13 @@ import java.util.Map;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/google-calendar")
 public class GoogleCalendarController {
 
     private final GoogleCalendarService googleCalendarService;
     private final ReservationService reservationService;
 
-
-    public GoogleCalendarController(GoogleCalendarService googleCalendarService, ReservationService reservationService) {
-        this.googleCalendarService = googleCalendarService;
-        this.reservationService = reservationService;
-    }
 
     @GetMapping("/calendar-ids")
     public ResponseEntity<Map<String, String>> getCalendarIds(@RequestHeader("Authorization") String authorizationHeader) {

@@ -1,12 +1,15 @@
 package com.blaybus.reservation.service;
 
 import com.blaybus.global.jwt.JwtUtil;
+import com.blaybus.reservation.dto.ReservationDateRequestDto;
 import com.blaybus.reservation.dto.ReservationRequestDto;
 import com.blaybus.reservation.dto.ReservationResponseDto;
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,70 +21,102 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService
 {
     private final ReservationRepository reservationRepository;
     private final DesignerService designerService;
     private final JwtUtil jwtUtil;
     //유저 코드 생성이후 연동할 예정
-    public ReservationResponseDto.ReservationResponse createReservation(String accessToken) {
+    public ReservationResponseDto createReservation(String accessToken,ReservationRequestDto requestDto) {
         String userName = jwtUtil.getName(accessToken);
         String googleId = jwtUtil.getEmail(accessToken);
-        Reservation reservation = new Reservation();
+
+
+        Reservation reservation=Reservation.buildReservation(requestDto);
         reservation.setUserId(googleId);
-        reservation.setId(UUID.randomUUID().toString());
         reservation.setStatus("PENDING");
-        reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
-        return new ReservationResponseDto.ReservationResponse(reservation.getId(),reservation.getStatus());
+
+        return new ReservationResponseDto(reservation);
 
 
     }
 
-    public ReservationResponseDto.ReservationMeetResponse updateReservationMeet(String reservationId, Boolean meet)
+//    public ReservationResponseDto updateReservationMeet(ReservationRequestDto requestDto)
+//    {
+//        String reservationId= requestDto.getReservationId();
+//        log.info("resID: {}", reservationId);
+//        Reservation oldReservation = reservationRepository.findOneById(reservationId);
+//        log.info("oldID:{}", oldReservation.getId());
+//        if (oldReservation == null) {
+//            throw new IllegalArgumentException("no reservation " + reservationId);
+//        }
+//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
+//        log.info("newID:{}", updatedReservation.getId());
+//        return new ReservationResponseDto(updatedReservation);
+//    }
+//
+//
+//    public ReservationResponseDto updateReservationDesigner(ReservationRequestDto requestDto)
+//    {
+//        String reservationId= requestDto.getReservationId();
+//        Reservation oldReservation = reservationRepository.findOneById(reservationId);
+//        if (oldReservation == null) {
+//            throw new IllegalArgumentException("no reservation " + reservationId);
+//        }
+//        String designerId=requestDto.getDesignerId();
+//        Designer designer= designerService.getOneDesigner(designerId);
+//        if (designer == null) {
+//            throw new IllegalArgumentException("no designerss" + designerId);
+//        }
+//        requestDto.setPrice(requestDto.getMeet() == null ?
+//                oldReservation.getPrice() :
+//                (requestDto.getMeet()) ?
+//                                designer.getPrice_meet() :
+//                                designer.getPrice_not_meet())
+//
+//                ;
+//        requestDto.setDesignerId(designerId);
+//        requestDto.setShop(designer.getAddress());
+//
+//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
+//        reservationRepository.save(updatedReservation);
+//
+//
+//        return new ReservationResponseDto(updatedReservation);
+//    }
+//
+//
+//    public ReservationResponseDto updateReservationDateAndTime(ReservationRequestDto requestDto)
+//    {
+//        String reservationId=requestDto.getReservationId();
+//        Reservation oldReservation=reservationRepository.findOneById(reservationId);
+//
+//        LocalDate date=requestDto.getDate();
+//        LocalTime start=requestDto.getStart();
+//        LocalTime end= start.plusMinutes(30);
+//
+//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
+//
+//        reservationRepository.save(updatedReservation);
+//        return new ReservationResponseDto(updatedReservation);
+//    }
+//
+//
+    public void updateReservationGoogleMeetUri(String reservationId,String googleMeetUri)
     {
-        Reservation reservation = reservationRepository.findOneById(reservationId);
-        if (reservation == null) {
-            throw new IllegalArgumentException("no reservation " + reservationId);
-        }
-        reservation.setMeet(meet);
+        Reservation reservation=reservationRepository.findOneById(reservationId);
+        reservation.setGoogleMeetUri(googleMeetUri);
         reservationRepository.save(reservation);
-        return new ReservationResponseDto.ReservationMeetResponse(reservationId,meet);
     }
-
-
-    public ReservationResponseDto.ReservationDesignerResponse updateReservationDesigner(String reservationId, ReservationRequestDto.ReservationDesignerIdRequest request)
-    {
-        Reservation reservation = reservationRepository.findOneById(reservationId);
-        if (reservation == null) {
-            throw new IllegalArgumentException("no reservation " + reservationId);
-        }
-        String designerId=request.getDesignerId();
-        Designer designer= designerService.getOneDesigner(designerId);
-
-        if (designer == null) {
-            throw new IllegalArgumentException("no designerss" + designerId);
-        }
-
-        reservation.setDesignerId(designerId);
-        reservation.setShop(designer.getAddress());
-        reservation.setPrice(reservation.getMeet() ?
-                designer.getPrice_meet().toString() :
-                designer.getPrice_not_meet().toString());
-        reservationRepository.save(reservation);
-
-        return new ReservationResponseDto.ReservationDesignerResponse(reservationId,designerId,reservation.getShop(),reservation.getPrice());
-    }
-
 
     public ReservationResponseDto.ReservationTimeResponse getReservationsByDesignerAndDate(
-            String designerId, ReservationRequestDto.ReservationDateRequest request) {
-
-        LocalDate date = request.getDate();
+            LocalDate date, String designerId) {
 
         Set<String> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date);
 
-
+        System.out.println(reservedTimes);
         List<String> availableTimes = new ArrayList<>();
         LocalTime time = LocalTime.of(10, 0);
         LocalTime closingTime = LocalTime.of(20, 0);
@@ -95,25 +130,13 @@ public class ReservationService
 
         return new ReservationResponseDto.ReservationTimeResponse(date.toString(), availableTimes);
     }
-    public Reservation updateReservationDateAndTime(String reservationId, ReservationRequestDto.ReservationDateAndTimeRequest request)
-    {
-        Reservation reservation=reservationRepository.findOneById(reservationId);
 
-        LocalDate date=request.getDate();
-        LocalTime time=request.getTime();
-        LocalTime end= time.plusMinutes(30);
 
-        reservation.setDate(date);
-        reservation.setStart(time);
-        reservation.setEnd(end);
-        reservationRepository.save(reservation);
-        return reservation;
-    }
-    public void updateReservationGoogleMeetUri(String reservationId,String googleMeetUri)
-    {
-        Reservation reservation=reservationRepository.findOneById(reservationId);
-        reservation.setGoogleMeetUri(googleMeetUri);
-        reservationRepository.save(reservation);
-    }
+
+
+
+
+
+
 
 }

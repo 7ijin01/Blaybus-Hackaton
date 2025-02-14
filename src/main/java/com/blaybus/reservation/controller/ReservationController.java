@@ -1,16 +1,22 @@
 package com.blaybus.reservation.controller;
 
+import com.blaybus.reservation.dto.ReservationDateRequestDto;
 import com.blaybus.reservation.dto.ReservationRequestDto;
 import com.blaybus.reservation.dto.ReservationResponseDto;
 
 import com.blaybus.reservation.entity.Reservation;
 import com.blaybus.reservation.service.ReservationService;
+import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.Authorization;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController
 {
@@ -18,49 +24,46 @@ public class ReservationController
 
     private final ReservationService reservationService;
 
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
 
-    @GetMapping("/create")
-    public ResponseEntity<ReservationResponseDto.ReservationResponse> createReservation(@RequestHeader("Authorization") String accessToken) {
-        System.out.println(accessToken);
-        return ResponseEntity.ok(reservationService.createReservation(accessToken));
-    }
-
-    @PutMapping("/{reservationId}/mode")
-    public ResponseEntity<ReservationResponseDto.ReservationMeetResponse> UpdateMeet(
-            @PathVariable String reservationId,
-            @RequestBody ReservationRequestDto.ReservationMeetRequest request)
+    @PostMapping("/create")
+    public ResponseEntity<ReservationResponseDto> createReservation(
+            @RequestHeader("Authorization") String token,
+            @RequestBody ReservationRequestDto requestDto
+    )
     {
-        return ResponseEntity.ok(reservationService.updateReservationMeet(reservationId,request.isMeet()));
+        return ResponseEntity.ok(reservationService.createReservation(token,requestDto));
     }
 
+//    @PutMapping("/mode")
+//    public ResponseEntity<ReservationResponseDto> UpdateMeet(
+//            @RequestBody ReservationRequestDto request)
+//    {
+//        return ResponseEntity.ok(reservationService.updateReservationMeet(request));
+//    }
+//
+//
+//    @PutMapping("/{reservationId}/designer")
+//    public ResponseEntity<ReservationResponseDto> selectDesigner(
+//            @RequestBody ReservationRequestDto request)
+//    {
+//        return ResponseEntity.ok(reservationService.updateReservationDesigner(request));
+//    }
+//
+//
+//    @PutMapping("/{reservationId}/designer/date")
+//    public ResponseEntity<ReservationResponseDto> selectDateAndTime(
+//            @RequestBody ReservationRequestDto request)
+//    {
+//        return ResponseEntity.ok(reservationService.updateReservationDateAndTime(request));
+//    }
 
-    @PutMapping("/{reservationId}/designer")
-    public ResponseEntity<ReservationResponseDto.ReservationDesignerResponse> selectDesigner(
-            @PathVariable String reservationId,
-            @RequestBody ReservationRequestDto.ReservationDesignerIdRequest request)
-    {
-        return ResponseEntity.ok(reservationService.updateReservationDesigner(reservationId,request));
-    }
 
-
-    @PutMapping("/{reservationId}/designer/date")
-    public ResponseEntity<Reservation> selectDateAndTime(
-            @PathVariable String reservationId,
-            @RequestBody ReservationRequestDto.ReservationDateAndTimeRequest request)
-    {
-        return ResponseEntity.ok(reservationService.updateReservationDateAndTime(reservationId,request));
-    }
-
-
-    @GetMapping("/{designerId}/available")
+    @GetMapping("/available")
     public ResponseEntity<ReservationResponseDto.ReservationTimeResponse> getReservationsByDesignerAndDate(
-            @PathVariable String designerId,
-            @RequestBody ReservationRequestDto.ReservationDateRequest request) {
+            @RequestParam LocalDate date,
+            @RequestParam String designerId) {
 
-        return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(designerId, request));
+        return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(date,designerId));
     }
 
 

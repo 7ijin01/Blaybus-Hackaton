@@ -51,7 +51,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(antMatcher("/api/hello/**")).permitAll()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers("/api/google-calendar/**").permitAll()
+
+
+                        .requestMatchers("/api/google-calendar/**","/","/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/reservation/**").permitAll()
+                        .requestMatchers("/designers/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

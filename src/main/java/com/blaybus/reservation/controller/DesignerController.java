@@ -2,6 +2,7 @@ package com.blaybus.reservation.controller;
 
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.service.DesignerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,15 +11,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/designers")
+@RequiredArgsConstructor
 public class DesignerController
 {
     private final DesignerService designerService;
 
-
-    public DesignerController(DesignerService designerService) {
-        this.designerService = designerService;
-
-    }
 
     @GetMapping
     public ResponseEntity<List<Designer>> getAllDesigners()

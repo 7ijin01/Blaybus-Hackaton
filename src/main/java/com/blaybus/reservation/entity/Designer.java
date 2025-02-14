@@ -25,4 +25,5 @@ public class Designer
     private String introduction;
     private Integer meet;
 
+
 }
