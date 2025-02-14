@@ -1,0 +1,45 @@
+package com.blaybus.domain.reservation.repository.custom.design;
+
+import com.blaybus.domain.reservation.entity.Designer;
+
+import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
+
+public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
+{
+    private final MongoTemplate mongoTemplate;
+
+    public CustomDesignerRepositoryImpl(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    @Override
+    public List<Designer> findAllByPriceAndRegion(Integer maxPrice, List<String> region) {
+        Query query=new Query();
+
+        if(maxPrice!=null)
+        {
+            query.addCriteria(Criteria.where("price_meet").lte(maxPrice));
+        }
+
+        if(region!=null && !region.isEmpty())
+        {
+            query.addCriteria(Criteria.where("region").in(region));
+        }
+        return mongoTemplate.find(query, Designer.class);
+    }
+
+    @Override
+    public Designer findOneById(String designerId) {
+        Query query=new Query();
+        query.addCriteria(Criteria.where("id").is(designerId));
+        return MongoRepositoryUtil.findOneById(mongoTemplate, designerId, Designer.class);
+    }
+
+
+
+}
