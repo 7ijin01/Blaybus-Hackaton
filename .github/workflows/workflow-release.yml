@@ -14,11 +14,8 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      KAKAOPAY_KEY: ${ secrets.KAKAOPAY_KEY }
+      KAKAOPAY_KEY: ${{ secrets.KAKAOPAY_KEY }}
 
-
-    script: |
-            echo "KAKAOPAY_KEY: ${KAKAOPAY_KEY}"
 
     steps:
       - name: Checkout
