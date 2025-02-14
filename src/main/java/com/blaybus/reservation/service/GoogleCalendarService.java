@@ -85,7 +85,7 @@ public class GoogleCalendarService {
 //    }
     public String createEventWithMeeting(String accessToken, GoogleMeetRequest googleMeetRequest) {
 
-        String calendarId= googleMeetRequest.getCalendarId();
+        String calendarId= googleMeetRequest.getUserId();
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("summary", googleMeetRequest.getSummary());
