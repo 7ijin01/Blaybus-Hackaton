@@ -14,7 +14,7 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      KAKAOPAY_KEY: ${ secrets.KAKAOPAY_KEY}
+      KAKAOPAY_KEY: ${ secrets.KAKAOPAY_KEY }
 
 
     steps:
@@ -64,6 +64,7 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
       GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      KAKAOPAY_KEY: ${ secrets.KAKAOPAY_KEY }
     steps:
       - name: 배포 서버에 SSH로 연결하여 배포
         uses: appleboy/ssh-action@v0.1.5
