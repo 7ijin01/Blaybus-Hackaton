@@ -28,16 +28,14 @@ public class DesignerController
     }
 
     @GetMapping("/filter")
-    @Operation(summary = "필터링 디자이너 조회", description = "       online, offline, onoffline" )
+    @Operation(summary = "필터링 디자이너 조회", description = "대면, 비대면, 대면&비대면 3가지 기준으로 (지역, 가격)필터링 대면&비대면 같은 경우 maxPrice은 대면 비용에 맞춰서 , minPrice는 비대면 비용에 맞춰서 필터링     -> 결과  online,offline,onoffline 키를 가지는 맵에 List 형태로 디자이너 알맞게 저장   " )
     public ResponseEntity<Map<String,List<Designer>>> getDesignersByRegionAndPrice(
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) List<String> regions)
     {
 
-        List<Designer> filterdList = designerService.getDesignersByRegionAndPrice(maxPrice,minPrice,regions);
-
-        Map<String,List<Designer>> filterdDesignersWithMeet = designerService.filterdDesignersWithMeet(filterdList);
+        Map<String,List<Designer>> filterdDesignersWithMeet = designerService.filterdDesignersWithMeet(maxPrice,minPrice,regions);
 
         return ResponseEntity.ok(filterdDesignersWithMeet);
     }
