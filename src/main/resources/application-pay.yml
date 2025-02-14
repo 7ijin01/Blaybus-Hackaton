@@ -1,0 +1,3 @@
+kakaopay:
+  secretKey: ${KAKAOPAY_KEY}
+  cid: TC0ONETIME

@@ -3,6 +3,7 @@ spring:
     mongodb:
       uri: mongodb+srv://gijin22:qIkwtBVNuVzPHOht@cluster0.uwirm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: blaybus
+
   servlet:
     multipart:
       enabled: true
@@ -41,3 +42,20 @@ server:
     key-store-password: blaybus
     key-store-type: PKCS12
     key-alias: blaybus
+
+
+  profiles:
+    active: pay
+
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
