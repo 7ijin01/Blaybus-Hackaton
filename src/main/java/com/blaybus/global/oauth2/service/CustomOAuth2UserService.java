@@ -46,9 +46,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String registrationId = userRequest.getClientRegistration()
                 .getRegistrationId();
-        log.info("registraionId", registrationId);
         String accessToken = userRequest.getAccessToken().getTokenValue();
-        log.info("accessToken", accessToken);
+
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId,
                 accessToken,
@@ -59,14 +58,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
         }
 
-        User existingUser = userRepository.findByGoogleId(oAuth2UserInfo.getId());
+        User existingUser = userRepository.findByGoogleId(oAuth2UserInfo.getEmail());
         log.info("user", existingUser);
 
         if (existingUser == null){
             User user = User.builder()
                     .googleId(oAuth2UserInfo.getEmail())
                     .name(oAuth2UserInfo.getName())
-                    .gender("Unknown") // 기본값 설정
                     .build();
             userRepository.save(user);
         }

@@ -16,6 +16,5 @@ public class User {
 
     private String googleId; // Google OAuth ID
     private String name; // 사용자 이름
-    private String gender; // 성별 ("M", "F" 또는 기타)
 
 }
