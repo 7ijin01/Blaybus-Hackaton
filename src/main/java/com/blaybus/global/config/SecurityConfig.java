@@ -65,7 +65,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/", "/reservation/create", "/designers/**", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/", "/reservation/create", "/designers/**", "/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
