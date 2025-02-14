@@ -2,6 +2,8 @@ package com.blaybus.reservation.controller;
 
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.service.DesignerService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+
+@Tag(name = "디자이너 조회 API", description = "전체 디자이너 조회 및 필터링된 디자이너 조회")
 @RestController
 @RequestMapping("/designers")
 @RequiredArgsConstructor
@@ -16,7 +20,7 @@ public class DesignerController
 {
     private final DesignerService designerService;
 
-
+    @Operation(summary = "전체 디자이너 조회", description = "/desingers 경로로 요청 보내면 리스트 형태로 반환")
     @GetMapping
     public ResponseEntity<List<Designer>> getAllDesigners()
     {
@@ -24,12 +28,14 @@ public class DesignerController
     }
 
     @GetMapping("/filter")
+    @Operation(summary = "필터링 디자이너 조회", description = "       online, offline, onoffline" )
     public ResponseEntity<Map<String,List<Designer>>> getDesignersByRegionAndPrice(
             @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) List<String> regions)
     {
 
-        List<Designer> filterdList = designerService.getDesignersByRegionAndPrice(maxPrice,regions);
+        List<Designer> filterdList = designerService.getDesignersByRegionAndPrice(maxPrice,minPrice,regions);
 
         Map<String,List<Designer>> filterdDesignersWithMeet = designerService.filterdDesignersWithMeet(filterdList);
 
