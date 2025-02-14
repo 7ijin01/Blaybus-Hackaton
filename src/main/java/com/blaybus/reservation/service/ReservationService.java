@@ -35,9 +35,6 @@ public class ReservationService
         String userName = jwtUtil.getName(extractedToken);
         String googleId = jwtUtil.getEmail(extractedToken);
 
-        log.info("userName: {}", userName);
-        log.info("googleId: {}", googleId);
-
 
 
         Reservation reservation = new Reservation();
