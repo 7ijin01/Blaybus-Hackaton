@@ -52,8 +52,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             OAuth2AuthorizedClient client = authorizedClientService.loadAuthorizedClient(
                     oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName());
 
-            // ✅ 쿠키 설정
+
+            String googleAccessToken = client.getAccessToken().getTokenValue();
             CookieUtils.addCookie(response, "access_token", accessToken, 3600);
+            CookieUtils.addCookie(response, "google_oauth_token", googleAccessToken, 3600);
             CookieUtils.addCookie(response, "refresh_token", refreshToken, 86400);
 
             log.info("✅ OAuth 로그인 성공! 쿠키 설정 완료! 리디렉션 실행: {}", targetUrl);
