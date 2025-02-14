@@ -20,16 +20,16 @@ public class GoogleCalendarController {
     private final ReservationService reservationService;
 
 
-    @GetMapping("/calendar-ids")
-    public ResponseEntity<Map<String, String>> getCalendarIds(@RequestHeader("Authorization") String authorizationHeader) {
-
-        String accessToken = authorizationHeader.replace("Bearer ", "");
-        String calendarId = googleCalendarService.getCalendarIds(accessToken);
-        Map<String, String> response = new HashMap<>();
-        response.put("calendarId",calendarId);
-        return ResponseEntity.ok(response);
-
-    }
+//    @GetMapping("/calendar-ids")
+//    public ResponseEntity<Map<String, String>> getCalendarIds(@RequestHeader("Authorization") String authorizationHeader) {
+//
+//        String accessToken = authorizationHeader.replace("Bearer ", "");
+//        String calendarId = googleCalendarService.getCalendarIds(accessToken);
+//        Map<String, String> response = new HashMap<>();
+//        response.put("calendarId",calendarId);
+//        return ResponseEntity.ok(response);
+//
+//    }
 
 //    @PostMapping("/create-event")
 //    public String createEvent(

@@ -3,6 +3,7 @@ package com.blaybus.reservation.service;
 import com.blaybus.reservation.dto.GoogleMeetRequest;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -10,48 +11,46 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class GoogleCalendarService {
 
     private static final String API_URL = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
     private static final String API_EVENT_URL = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?conferenceDataVersion=1";
     private final RestTemplate restTemplate;
 
-    public GoogleCalendarService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
-    public String getCalendarIds(String accessToken) {
-        List<String> calendarIds = new ArrayList<>();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(response.getBody());
-
-                JsonNode items = rootNode.get("items");
-                if (items != null && items.isArray()) {
-                    for (JsonNode item : items) {
-                        String id = item.get("id").asText();
-                        calendarIds.add(id);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Error: " + response.getStatusCode());
-        }
-
-        return calendarIds.get(1);
-    }
+//    public String getCalendarIds(String accessToken) {
+//        List<String> calendarIds = new ArrayList<>();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + accessToken);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.GET, entity, String.class);
+//
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            try {
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                JsonNode rootNode = objectMapper.readTree(response.getBody());
+//
+//                JsonNode items = rootNode.get("items");
+//                if (items != null && items.isArray()) {
+//                    for (JsonNode item : items) {
+//                        String id = item.get("id").asText();
+//                        calendarIds.add(id);
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            System.out.println("Error: " + response.getStatusCode());
+//        }
+//
+//        return calendarIds.get(1);
+//    }
 //    public String createEvent(String accessToken, String calendarId) {
 //
 //        Map<String, Object> requestBody = new HashMap<>();

@@ -1,20 +1,21 @@
 package com.blaybus.reservation.service;
 
 import com.blaybus.reservation.entity.Designer;
+import com.blaybus.reservation.exception.CustomException;
+import com.blaybus.reservation.exception.ExceptionCode;
 import com.blaybus.reservation.repository.DesignerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DesignerService
 {
     private final DesignerRepository designerRepository;
 
-    public DesignerService(DesignerRepository designerRepository) {
-        this.designerRepository = designerRepository;
-    }
 
     public List<Designer> getAllDesigners()
     {
@@ -24,7 +25,7 @@ public class DesignerService
     public List<Designer> getDesignersByRegionAndPrice(Integer maxPrice,List<String> region)
     {
         if (maxPrice == null || region == null || region.isEmpty()) {
-            throw new IllegalArgumentException("가격 또는 지역 정보가 올바르지 않습니다.");
+            throw new CustomException(ExceptionCode.INVALID_REQUEST);
         }
 
         List<Designer> filteredList=designerRepository.findAllByPriceAndRegion(maxPrice,region);
@@ -35,7 +36,7 @@ public class DesignerService
     public Map<String, List<Designer>> filterdDesignersWithMeet(List<Designer> filteredList)
     {
         if (filteredList == null) {
-            throw new IllegalArgumentException("디자이너 목록이 null입니다.");
+            throw new CustomException(ExceptionCode.INVALID_REQUEST);
         }
 
         Map<String ,List<Designer>> sortMap =new HashMap<>();
@@ -64,10 +65,10 @@ public class DesignerService
         sortMap.put("onoffline",onoffline);
         return sortMap;
     }
-    public Designer getOneDesigner(String designerId)
-    {
-        return Optional.ofNullable(designerRepository.findOneById(designerId))
-                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 디자이너를 찾을 수 없습니다: " + designerId));
-    }
+//    public Designer getOneDesigner(String designerId)
+//    {
+//        return Optional.ofNullable(designerRepository.findOneById(designerId))
+//                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 디자이너를 찾을 수 없습니다: " + designerId));
+//    }
 
 }

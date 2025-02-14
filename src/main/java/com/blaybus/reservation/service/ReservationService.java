@@ -6,6 +6,8 @@ import com.blaybus.reservation.dto.ReservationRequestDto;
 import com.blaybus.reservation.dto.ReservationResponseDto;
 import com.blaybus.reservation.entity.Designer;
 import com.blaybus.reservation.entity.Reservation;
+import com.blaybus.reservation.exception.CustomException;
+import com.blaybus.reservation.exception.ExceptionCode;
 import com.blaybus.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +31,7 @@ public class ReservationService
     private final JwtUtil jwtUtil;
     //유저 코드 생성이후 연동할 예정
     public ReservationResponseDto createReservation(String accessToken,ReservationRequestDto requestDto) {
-        String userName = jwtUtil.getName(accessToken);
         String googleId = jwtUtil.getEmail(accessToken);
-
-
         Reservation reservation=Reservation.buildReservation(requestDto);
         reservation.setUserId(googleId);
         reservation.setStatus("PENDING");
@@ -107,6 +106,9 @@ public class ReservationService
     public void updateReservationGoogleMeetUri(String reservationId,String googleMeetUri)
     {
         Reservation reservation=reservationRepository.findOneById(reservationId);
+        if (reservation == null) {
+            throw new CustomException(ExceptionCode.RESERVATION_NOT_FOUND);
+        }
         reservation.setGoogleMeetUri(googleMeetUri);
         reservationRepository.save(reservation);
     }
@@ -116,7 +118,6 @@ public class ReservationService
 
         Set<String> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date);
 
-        System.out.println(reservedTimes);
         List<String> availableTimes = new ArrayList<>();
         LocalTime time = LocalTime.of(10, 0);
         LocalTime closingTime = LocalTime.of(20, 0);
