@@ -66,7 +66,7 @@ public class KakaoPayService {
 
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
 
-
+        log.info("requestEntity: {}", requestEntity);
         // 외부에 보낼 url
         kakaoReady = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/ready",
