@@ -21,7 +21,7 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     @Override
     public Reservation findOneById(String reservationId) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(reservationId));
+        query.addCriteria(Criteria.where("_id").is(reservationId));
         return MongoRepositoryUtil.findOneById(mongoTemplate, reservationId, Reservation.class);
     }
 
@@ -29,7 +29,8 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     public Set<String> findByDesignerIdAndDate(String designerId, LocalDate date) {
         Query query = new Query();
         query.addCriteria(Criteria.where("designerId").is(designerId)
-                .and("date").gte(date.atStartOfDay()).lt(date.plusDays(1).atStartOfDay()));
+                .and("date").gte(date.atStartOfDay()).lt(date.plusDays(1).atStartOfDay())
+                .and("status").is("CONFIRMED"));
 
         return mongoTemplate.find(query, Reservation.class)
                 .stream()

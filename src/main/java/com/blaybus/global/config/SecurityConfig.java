@@ -64,19 +64,26 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests((requests) -> requests
+
+                        .requestMatchers("/api/google-calendar/**","/","/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/reservation/**").permitAll()
+                        .requestMatchers("/designers/**").permitAll()
+
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/", "/reservation/create", "/designers/**",
                                 "/swagger-ui/**", "/v3/api-docs/**",
-                                "/api/oauth2/token", "/payment/**").permitAll()
+                                "/api/oauth2/token", "/payment/**",
+                                "/api/google-calendar/**", "/reservation/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2Login(configure ->
-                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
-                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
-                                .successHandler(oAuth2AuthenticationSuccessHandler)
-                                .failureHandler(oAuth2AuthenticationFailureHandler)
-                );
+                .sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//                .oauth2Login(configure ->
+//                        configure.authorizationEndpoint(config -> config.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+//                                .userInfoEndpoint(config -> config.userService(customOAuth2UserService))
+//                                .successHandler(oAuth2AuthenticationSuccessHandler)
+//                                .failureHandler(oAuth2AuthenticationFailureHandler)
+//                );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

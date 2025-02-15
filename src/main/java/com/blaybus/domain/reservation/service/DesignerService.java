@@ -77,59 +77,28 @@ public class DesignerService
         return designerRepository.findAll();
     }
 
-    public List<Designer> getDesignersByRegionAndPrice(Integer maxPrice,List<String> region)
+    public List<Designer> getDesignersByRegionAndPrice(Integer meet,Integer maxPrice,Integer minPrice,List<String> region)
     {
-        List<Designer> filteredList=designerRepository.findAllByPriceAndRegion(maxPrice,region);
-
+        List<Designer> filteredList=designerRepository.findAllByPriceAndRegion(meet,maxPrice,minPrice,region);
         return  filteredList;
-
     }
-    public Map<String, List<Designer>> filterdDesignersWithMeet(List<Designer> filteredList)
+    public Map<String, List<Designer>> filterdDesignersWithMeet(Integer maxPrice,Integer minPrice,List<String> region)
     {
-
         Map<String ,List<Designer>> sortMap =new HashMap<>();
 
-        List<Designer> online =new ArrayList<>();
-        List<Designer> offline=new ArrayList<>();
-        List<Designer> onoffline=new ArrayList<>();
+        List<Designer> online = getDesignersByRegionAndPrice(0,maxPrice,minPrice,region);
+        List<Designer> offline= getDesignersByRegionAndPrice(1,maxPrice,minPrice,region);
+        List<Designer> onoffline= getDesignersByRegionAndPrice(2,maxPrice,minPrice,region);
 
-        for(Designer designer: filteredList)
-        {
-            if(designer.getMeet()==0)
-            {
-                online.add(designer);
-            }
-            else if(designer.getMeet()==1)
-            {
-                offline.add(designer);
-            }
-            else if(designer.getMeet()==2)
-            {
-                onoffline.add(designer);
-            }
-        }
         sortMap.put("online",online);
         sortMap.put("offline",offline);
         sortMap.put("onoffline",onoffline);
         return sortMap;
     }
-    public Designer getOneDesigner(String designerId)
-    {
-        return designerRepository.findOneById(designerId);
-    }
 
-
-
-//    public List<Designer> getDesignersOnline(List<Designer> designers)
+    //    public Designer getOneDesigner(String designerId)
 //    {
-//        return  designerRepository.findAllByOnline(designers);
-//    }
-//    public List<Designer> getDesignersOffline(List<Designer> designers)
-//    {
-//        return  designerRepository.findAllByOffline(designers);
-//    }
-//    public List<Designer> getDesignersOnlineAndOffline(List<Designer> designers)
-//    {
-//        return  designerRepository.findAllByOnlineAndOffline(designers);
+//        return Optional.ofNullable(designerRepository.findOneById(designerId))
+//                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 디자이너를 찾을 수 없습니다: " + designerId));
 //    }
 }
