@@ -33,7 +33,7 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
+                query.addCriteria(Criteria.where("price.offline").gte(minPrice));
 
             }
         }
@@ -47,7 +47,7 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
+                query.addCriteria(Criteria.where("price.online").gte(minPrice));
 
             }
         }
@@ -61,7 +61,7 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
+                query.addCriteria(Criteria.where("price.offline").gte(minPrice));
 
             }
         }
