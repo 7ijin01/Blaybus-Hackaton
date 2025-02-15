@@ -27,7 +27,6 @@ public class Designer
     private List<String> portfolios;
     private String field;
     private String introduction;
-    private Integer meet;
 
 
 }
