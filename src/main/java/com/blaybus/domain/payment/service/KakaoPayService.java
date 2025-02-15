@@ -136,7 +136,7 @@ public class KakaoPayService {
                 .kakaoPayInfo(kakaoPayInfo)  // 카카오페이 결제 정보 저장
                 .build();
 
-        Reservation reservation=reservationRepository.findOneById(requestDTO.getPartnerOrderId());
+        Reservation reservation=reservationRepository.findOneById(payment.getReservationId());
         reservation.setStatus("CONFIRMED");
 
         reservationRepository.save(reservation);
