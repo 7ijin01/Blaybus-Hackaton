@@ -22,44 +22,50 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
     @Override
     public List<Designer> findAllByPriceAndRegion(Integer meet,Integer maxPrice,Integer minPrice, List<String> region) {
         Query query=new Query();
-        if(meet==1)
+
+        if (meet == 1)
         {
+            query.addCriteria(Criteria.where("type").is(List.of("대면")));
             if(maxPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_meet").lte(maxPrice)
-                .and("meet").is(1));
+                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
+
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_meet").gte(minPrice)
-                        .and("meet").is(1));
+                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
+
             }
         }
-        else if(meet==0)
+        else if (meet == 0)
         {
+            query.addCriteria(Criteria.where("type").is(List.of("비대면")));
             if(maxPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_not_meet").lte(maxPrice)
-                        .and("meet").is(0));
+                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
+
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_not_meet").gte(minPrice)
-                        .and("meet").is(0));
+                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
+
             }
         }
-        else {
+        else if (meet == 2)
+        {
+            query.addCriteria(Criteria.where("type").is(List.of("대면","비대면")));
             if(maxPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_meet").lte(maxPrice)
-                        .and("meet").is(2));
+                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
+
             }
             if(minPrice!=null)
             {
-                query.addCriteria(Criteria.where("price_not_meet").gte(minPrice)
-                        .and("meet").is(2));
+                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
+
             }
         }
+
         if(region!=null && !region.isEmpty())
         {
             query.addCriteria(Criteria.where("region").in(region));

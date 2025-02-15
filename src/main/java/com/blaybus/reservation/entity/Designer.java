@@ -4,6 +4,9 @@ import lombok.*;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+import java.util.Map;
+
 @Document(collection = "designers")
 
 @Builder
@@ -18,9 +21,10 @@ public class Designer
     private String name;
     private String region;
     private String address;
-    private Integer price_meet;
-    private Integer price_not_meet;
+    private Map<String, Integer> price; // { "offline": 40000, "online": 20000 }
+    private List<String> type; // ["대면", "비대면"]
     private String profile;
+    private List<String> portfolios;
     private String field;
     private String introduction;
     private Integer meet;
