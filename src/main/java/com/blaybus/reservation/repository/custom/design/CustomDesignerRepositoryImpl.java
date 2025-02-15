@@ -26,43 +26,34 @@ public class CustomDesignerRepositoryImpl implements CustomDesignerRepository
         if (meet == 1)
         {
             query.addCriteria(Criteria.where("type").is(List.of("대면")));
-            if(maxPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.offline").lte(maxPrice));
-
+            Criteria priceCriteria = new Criteria();
+            if (maxPrice != null) {
+                priceCriteria = priceCriteria.and("price.offline").lte(maxPrice);
             }
-            if(minPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.offline").gte(minPrice));
-
+            if (minPrice != null) {
+                priceCriteria = priceCriteria.and("price.offline").gte(minPrice);
             }
         }
         else if (meet == 0)
         {
             query.addCriteria(Criteria.where("type").is(List.of("비대면")));
-            if(maxPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
-
+            Criteria priceCriteria = new Criteria();
+            if (maxPrice != null) {
+                priceCriteria = priceCriteria.and("price.online").lte(maxPrice);
             }
-            if(minPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.online").gte(minPrice));
-
+            if (minPrice != null) {
+                priceCriteria = priceCriteria.and("price.online").gte(minPrice);
             }
         }
         else if (meet == 2)
         {
             query.addCriteria(Criteria.where("type").is(List.of("대면","비대면")));
-            if(maxPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.online").lte(maxPrice));
-
-            }
-            if(minPrice!=null)
-            {
-                query.addCriteria(Criteria.where("price.offline").gte(minPrice));
-
+            Criteria priceCriteria = new Criteria();
+            if (maxPrice != null) {
+                priceCriteria = priceCriteria.orOperator(
+                        Criteria.where("price.online").lte(maxPrice),
+                        Criteria.where("price.offline").lte(maxPrice)
+                );
             }
         }
 
