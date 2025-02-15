@@ -49,16 +49,19 @@ public class DesignerController
 
 
     @PostMapping("/portfolio/register")
+    @Operation(summary = "디자이너 포트폴리오 등록")
     public void registerPortfolio(@RequestParam("file") MultipartFile file, @RequestParam("designerId") String designerId) throws Exception{
         designerService.upload(file, designerId);
     }
 
     @GetMapping("/portfolio/list")
+    @Operation(summary = "디자이너 포트폴리오 목록 반환", description = "포트폴리오 사진이나 영상을 반환하는 게 아닌, id만 반환")
     public List<String> listPortfolioIds(@RequestParam("designerId") String designerId){
         return designerService.findPortfolioIdsByDesignerId(designerId);
     }
 
     @GetMapping("/portfolio/load")
+    @Operation(summary = "디자이너 포트폴리오 목록 표출", description = "/designers/portfolio/list에서 반환된 id를 가지고 하나씩 사진이나 영상으로 반환.")
     public ResponseEntity<InputStreamResource> loadPortfolios(@RequestParam("objectId") String objectId) {
         return designerService.streamPortfolios(objectId);
     }
