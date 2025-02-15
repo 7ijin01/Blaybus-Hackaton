@@ -34,6 +34,10 @@ public class Reservation
     private String googleMeetUri;
     private String status;// "PENDING", "CONFIRMED", "CANCELED"
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private Date createdAt;
+
+
 
 
     @Builder

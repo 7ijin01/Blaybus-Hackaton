@@ -11,5 +11,5 @@ import java.util.Date;
 @Repository
 public interface ReservationRepository extends MongoRepository<Reservation,String>, CustomReservationRepository
 {
-//    void deleteByCreatedAtBeforeAndStatusNot(Date createdAt, String status);
+    void deleteByCreatedAtBeforeAndStatusNot(Date createdAt, String status);
 }

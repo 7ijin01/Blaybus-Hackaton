@@ -35,6 +35,7 @@ public class ReservationService
         Reservation reservation=Reservation.buildReservation(requestDto);
         reservation.setUserId(googleId);
         reservation.setStatus("PENDING");
+        reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
 
         return new ReservationResponseDto(reservation);
