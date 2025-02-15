@@ -6,6 +6,8 @@ import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.entity.enums.PaymentMethod;
 import com.blaybus.domain.payment.entity.enums.PaymentStatus;
 import com.blaybus.domain.payment.repository.PaymentRepository;
+import com.blaybus.domain.reservation.entity.Reservation;
+import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 public class BankTransferService {
 
     private final PaymentRepository paymentRepository;
+    private final ReservationRepository reservationRepository;
 
     // 계좌이체 결제 처리
     public String processBankTransfer(BankTransferRequestDTO requestDTO) {
@@ -56,5 +59,11 @@ public class BankTransferService {
 
         // 결제 정보 업데이트
         paymentRepository.save(paymentEntity);
+
+        //예약 정보 업데이트
+        Reservation reservation=reservationRepository.findOneById(paymentEntity.getReservationId());
+        reservation.setStatus("CONFIRMED");
+
+        reservationRepository.save(reservation);
     }
 }

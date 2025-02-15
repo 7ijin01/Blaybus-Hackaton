@@ -10,6 +10,8 @@ import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.entity.enums.PaymentMethod;
 import com.blaybus.domain.payment.entity.enums.PaymentStatus;
 import com.blaybus.domain.payment.repository.PaymentRepository;
+import com.blaybus.domain.reservation.entity.Reservation;
+import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -32,6 +34,7 @@ public class KakaoPayService {
     private final KakaoPayProperties payProperties;
     private final RestTemplate restTemplate;
     private KakaoPayReadyResponseDTO kakaoReady;
+    private final ReservationRepository reservationRepository;
 
     // https://developers.kakaopay.com/docs/payment/online/single-payment#payment-ready-request-syntax
     private HttpHeaders getHeaders() {  // 카카오페이 api : 헤더 설정 (Request Syntax 참고)
@@ -133,6 +136,10 @@ public class KakaoPayService {
                 .kakaoPayInfo(kakaoPayInfo)  // 카카오페이 결제 정보 저장
                 .build();
 
+        Reservation reservation=reservationRepository.findOneById(requestDTO.getPartnerOrderId());
+        reservation.setStatus("CONFIRMED");
+
+        reservationRepository.save(reservation);
         paymentRepository.save(payment);  // MongoDB에 저장
 
         System.out.println();
