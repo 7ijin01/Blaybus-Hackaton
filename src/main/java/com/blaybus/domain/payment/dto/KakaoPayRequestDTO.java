@@ -15,7 +15,7 @@ public class KakaoPayRequestDTO {
     @Schema(description = "상품명")
     private String itemName;
 
-    @Schema(description = "총 금액")
+    @Schema(description = "총 금액, totalAmount = vatAmount + taxFreeAmount")
     private String totalAmount;
 
     @Schema(description = "부가세")
