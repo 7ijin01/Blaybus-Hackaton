@@ -85,7 +85,9 @@ public class ReservationController
 
     @Operation(summary = "사용자별 예약 정보 조회")
     @GetMapping("/user")
-    public ResponseEntity<?> readList(@RequestParam String userId) {
+    public ResponseEntity<?> readList(@RequestParam String userId
+                                      //@RequestHeader("Authorization") String accessToken
+                                      ) {
         log.info("readList userId={}", userId);
         List<Reservation> reservationList = reservationService.findByUserId(userId);
         log.info("reservationList={}", reservationList);
@@ -93,7 +95,9 @@ public class ReservationController
     }
 
     @DeleteMapping("")
-    public ResponseEntity<?> delete(@RequestParam String reservationsId, String designerId) {
+    public ResponseEntity<?> delete(
+            //@RequestHeader("Authorization") String accessToken
+            @RequestParam String reservationsId, String designerId) {
         log.info("delete reservationsId={}, designerId={}", reservationsId, designerId);
         boolean result = reservationService.delete(reservationsId, designerId);
         log.info("result={}", result);

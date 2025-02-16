@@ -26,7 +26,7 @@ import java.util.*;
 @Slf4j
 public class JwtUtil {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000; // 30분
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 3 * 24 * 60 * 60 * 1000; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000; // 7일
 
     //객체 키 생성
