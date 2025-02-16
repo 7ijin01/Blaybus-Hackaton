@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservation API Request</title>
+  <script>
+    async function sendRequest() {
+        const url = "https://blaybus-glowup.com/reservation/create";
+        const token = "eyJhbGciOiJIUzI1NiJ9.eyJnb29nbGVJZCI6ImdsaXR0NTM4NEBnbWFpbC5jb20iLCJuYW1lIjoi67CV7KeE7JiBIiwiaWF0IjoxNzM5NDUyMTU2LCJleHAiOjE3Mzk0NTM5NTZ9.rdqr_TxLamDP68EYwMn0AvFH2ZPt8YJKeWT6o7PfKao";
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                mode: "cors", // CORS 해결
+                credentials: "include", // 쿠키, 인증 포함
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: "테스트 예약",
+                    date: "2025-02-12",
+                    time: "14:00",
+                    participants: 3
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            document.getElementById("response").innerText = JSON.stringify(data, null, 2);
+        } catch (error) {
+            document.getElementById("response").innerText = `Error: ${error.message}`;
+        }
+    }
+  </script>
+</head>
+<body>
+
+<h1>Reservation API Request</h1>
+<p>버튼을 클릭하면 예약 요청을 보냅니다.</p>
+<button onclick="sendRequest()">예약 요청 보내기</button>
+
+<h2>Response:</h2>
+<pre id="response"></pre>
+
+</body>
+</html>

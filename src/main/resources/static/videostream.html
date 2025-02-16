@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MongoDB GridFS 영상 업로드 & 스트리밍</title>
+</head>
+<body>
+<h2>MongoDB GridFS 영상 업로드</h2>
+
+<input type="file" id="videoInput">
+<button onclick="uploadVideo()">업로드</button>
+<p id="uploadStatus"></p>
+
+<h2>MongoDB GridFS 영상 스트리밍</h2>
+<input type="text" id="videoIdInput" placeholder="ObjectId 입력">
+<button onclick="loadVideo()">영상 불러오기</button>
+
+<h3>🎥 영상 미리보기</h3>
+<video id="videoPlayer" width="640" controls>
+  <source id="videoSource" src="" type="video/mp4">
+  브라우저가 비디오 태그를 지원하지 않습니다.
+</video>
+
+<script>
+  async function uploadVideo() {
+      const fileInput = document.getElementById("videoInput");
+      const uploadStatus = document.getElementById("uploadStatus");
+
+      if (!fileInput.files.length) {
+          uploadStatus.textContent = "❌ 파일을 선택하세요!";
+          return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+          const response = await fetch("http://localhost:8080/video/upload", {
+              method: "POST",
+              body: formData
+          });
+
+          if (!response.ok) {
+              throw new Error("업로드 실패");
+          }
+
+          const videoId = await response.text();
+          uploadStatus.textContent = `✅ 업로드 성공! 영상 ID: ${videoId}`;
+      } catch (error) {
+          console.error("영상 업로드 오류:", error);
+          uploadStatus.textContent = "❌ 서버 오류 발생!";
+      }
+  }
+
+  function loadVideo() {
+      const videoId = document.getElementById("videoIdInput").value;
+      const videoSource = document.getElementById("videoSource");
+      const videoPlayer = document.getElementById("videoPlayer");
+
+      if (!videoId) {
+          alert("영상 ID를 입력하세요.");
+          return;
+      }
+
+      videoSource.src = `http://localhost:8080/designers/stream?objectId=67aed091c61dc36612fb5f20`;
+      videoPlayer.load(); // 비디오 새로고침
+  }
+</script>
+</body>
+</html>
