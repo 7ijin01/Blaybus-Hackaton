@@ -2,11 +2,13 @@ package com.blaybus.domain.reservation.repository.custom.reservation;
 
 import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,24 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
                 .map(reservation -> reservation.getStart().toString())
                 .collect(Collectors.toSet());
     }
+    @Override
+    public List<Reservation> findAllByGoogleId(String googleId) {
+        Query query = new Query(Criteria.where("userId").is(googleId));
+        return mongoTemplate.find(query, Reservation.class);
+    }
+
+    @Override
+    public String deleteByDidAndRid(String designerId, String reservationId){
+        Query query = new Query(Criteria.where("_id").is(reservationId).and("designerId").is(designerId));
+        Reservation deletedReservation =  mongoTemplate.findOne(query, Reservation.class);
+
+        if (deletedReservation != null) {
+            mongoTemplate.remove(deletedReservation);
+            return "예약 정보 삭제 완료";
+        }
+        return "예약 정보 삭제 실패";
+    }
+
 }
 
 

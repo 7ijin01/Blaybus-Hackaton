@@ -85,32 +85,16 @@ public class ReservationController
 
     @Operation(summary = "사용자별 예약 정보 조회")
     @GetMapping("/user")
-    public ResponseEntity<?> readList(@RequestParam String userId
-                                      //@RequestHeader("Authorization") String accessToken
-                                      ) {
-        log.info("readList userId={}", userId);
-        List<Reservation> reservationList = reservationService.findByUserId(userId);
-        log.info("reservationList={}", reservationList);
-        return ResponseEntity.ok(reservationList);
+    public ResponseEntity<?> readList(@RequestHeader("Authorization") String accessToken) {
+        return ResponseEntity.ok(reservationService.findReservationsByUserId(accessToken));
     }
 
+    @Operation(summary = "예약 취소")
     @DeleteMapping("")
-    public ResponseEntity<?> delete(
+    public ResponseEntity<String> delete(
             //@RequestHeader("Authorization") String accessToken
-            @RequestParam String reservationsId,
+            @RequestParam String reservationId,
             @RequestParam String designerId) {
-        log.info("delete reservationsId={}, designerId={}", reservationsId, designerId);
-        boolean result = reservationService.delete(reservationsId, designerId);
-        log.info("result={}", result);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(reservationService.deleteReservation(reservationId, designerId));
     }
-
-//    @PostMapping("")
-//    public ResponseEntity<?> update(@RequestParam String reservationsId, String designerId) {
-//        log.info("update reservationsId={}, designerId={}", reservationsId, designerId);
-//        int result = reservationService.update(reservationsId, designerId);
-//        log.info("result={}", result);
-//        return ResponseEntity.ok(result);
-//    }
-
 }
