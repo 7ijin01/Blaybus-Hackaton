@@ -141,7 +141,11 @@ public class ReservationService
 
         return new ReservationResponseDto.ReservationTimeResponse(date.toString(), availableTimes);
     }
-    public List<Reservation> findByUserId(String userId) {
+    public List<Reservation> findByUserId(String userId
+                                          //String accessToken
+                                          ) {
+        // 실제 서비스 시에는 아래 코드 사용.
+        //String extractedUserId = jwtUtil.getEmail(accessToken);
         log.info("findByUserId userId={}", userId);
 
         if (userId == null) {
