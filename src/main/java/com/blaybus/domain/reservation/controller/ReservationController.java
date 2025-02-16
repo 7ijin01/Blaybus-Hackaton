@@ -83,7 +83,8 @@ public class ReservationController
         return ResponseEntity.ok(reservationService.getReservationsByDesignerAndDate(date,designerId));
     }
 
-    @GetMapping("")
+    @Operation(summary = "사용자별 예약 정보 조회")
+    @GetMapping("/user")
     public ResponseEntity<?> readList(@RequestParam String userId) {
         log.info("readList userId={}", userId);
         List<Reservation> reservationList = reservationService.findByUserId(userId);
@@ -99,12 +100,12 @@ public class ReservationController
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> update(@RequestParam String reservationsId, String designerId) {
-        log.info("update reservationsId={}, designerId={}", reservationsId, designerId);
-        int result = reservationService.update(reservationsId, designerId);
-        log.info("result={}", result);
-        return ResponseEntity.ok(result);
-    }
+//    @PostMapping("")
+//    public ResponseEntity<?> update(@RequestParam String reservationsId, String designerId) {
+//        log.info("update reservationsId={}, designerId={}", reservationsId, designerId);
+//        int result = reservationService.update(reservationsId, designerId);
+//        log.info("result={}", result);
+//        return ResponseEntity.ok(result);
+//    }
 
 }
