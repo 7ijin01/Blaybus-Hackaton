@@ -196,7 +196,7 @@ public class ReservationService
 
     // 예약 상태를 업데이트하는 메서드
     private void updateStatus(String collectionName, String reservationsId, String status) {
-        Query query = new Query(Criteria.where("reservationsId").is(reservationsId));
+        Query query = new Query(Criteria.where("_id").is(reservationsId));
         Update update = new Update().set("status", status);
         mongoTemplate.updateFirst(query, update, collectionName);
     }
@@ -209,7 +209,7 @@ public class ReservationService
     // 결제 정보 조회
     private PaymentEntity findPaymentByReservationsId(String reservationsId) {
         // payments 컬렉션에서 reservationsId로 결제 정보 조회
-        Query query = new Query(Criteria.where("reservationsId").is(reservationsId));
+        Query query = new Query(Criteria.where("_id").is(reservationsId));
         return mongoTemplate.findOne(query, PaymentEntity.class, "payments");
     }
 
@@ -230,7 +230,7 @@ public class ReservationService
     private void removeFromDesignerTimeTable(String reservationsId, String designerId) {
         // 1. 예약 정보 조회 (start, end 시간 가져오기)
         Reservation reservation = mongoTemplate.findOne(
-                new Query(Criteria.where("reservationsId").is(reservationsId)
+                new Query(Criteria.where("_id").is(reservationsId)
                         .and("designerId").is(designerId)), Reservation.class, "reservations");
 
         if (reservation == null) {
@@ -264,15 +264,12 @@ public class ReservationService
         //log.info("Updated designer timeTable for designerId={}, removed times between {} and {}", designerId, start, end);
     }
 
-    private Date parseDate(String time) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(time);
-        } catch (ParseException e) {
-            throw new RuntimeException("Time format error: " + time);
-        }
-    }
-
-    private String formatDate(Date date) {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+    private void removeDesignerTimeTable(String reservationsId, String designerId) {
+        // 예약 테이블에서 start와 end 값 null로 업데이트
+        Query query = new Query(Criteria.where("_id").is(reservationsId)
+                .and("designerId").is(designerId));
+        Update update = new Update().set("start", null).set("end", null);
+        mongoTemplate.updateFirst(query, update, "reservations");
+        log.info("Updated designer timeTable for designerId={}", designerId);
     }
 }
