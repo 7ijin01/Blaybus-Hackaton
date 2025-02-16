@@ -1,6 +1,7 @@
 package com.blaybus.domain.reservation.service;
 
 import com.blaybus.domain.payment.entity.PaymentEntity;
+import com.blaybus.domain.payment.repository.PaymentRepository;
 import com.blaybus.global.jwt.JwtUtil;
 import com.blaybus.domain.reservation.exception.CustomException;
 import com.blaybus.domain.reservation.exception.ExceptionCode;
@@ -28,12 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.blaybus.domain.payment.entity.enums.PaymentStatus.CANCELLED;
+import static javax.print.attribute.standard.JobState.CANCELED;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class ReservationService
 {
     private final ReservationRepository reservationRepository;
+    private final PaymentRepository paymentRepository;
     private final DesignerService designerService;
     private final JwtUtil jwtUtil;
 
@@ -149,9 +154,9 @@ public class ReservationService
     }
 
     public String deleteReservation(String reservationId, String designerId){
+        PaymentEntity payment = paymentRepository.findByReservationId(reservationId);
+        payment.setStatus(CANCELLED);
+        paymentRepository.save(payment);
         return reservationRepository.deleteByDidAndRid(designerId, reservationId);
     }
-
-
-
 }
