@@ -126,6 +126,7 @@ public class ReservationService
             LocalDate date, String designerId) {
 
         Set<String> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date);
+        log.info("reservedTimes: {}", reservedTimes);
 
         List<String> availableTimes = new ArrayList<>();
         LocalTime time = LocalTime.of(10, 0);
@@ -137,6 +138,7 @@ public class ReservationService
             }
             time = time.plusMinutes(30);
         }
+        log.info("availableTimes: {}", availableTimes);
 
         return new ReservationResponseDto.ReservationTimeResponse(date.toString(), availableTimes);
     }
