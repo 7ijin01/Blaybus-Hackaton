@@ -109,6 +109,7 @@ public class ReservationService {
 
     }
 
+    // 1. 예약 생성 시 디자이너 id 값 불러와서 setTimeTable로 추가할 경우
     private void removeFromDesignerTimeTable(String reservationsId, String designerId) {
         // 1. 예약 정보 조회 (start, end 시간 가져오기)
         Reservations reservation = mongoTemplate.findOne(
@@ -144,6 +145,19 @@ public class ReservationService {
         );
 
         log.info("Updated designer timeTable for designerId={}, removed times between {} and {}", designerId, start, end);
+    }
+
+    // 2. 디자이너에 타임 테이블 속성 추가 안하고, 예약 테이블에서 디자이너 Id 기준으로 해당하는 예약 정보들 불러 온 후, start와 end 로 값 찾아서 삭제하기
+    private void removeDesignerTimeTable(String reservationsId, String designerId) {
+        // 예약 테이블에서 start와 end 값 null로 업데이트
+        Query query = new Query(Criteria.where("reservationsId").is(reservationsId)
+        .and("designerId").is(designerId));
+
+        Update update = new Update().set("start", null).set("end", null);
+
+        mongoTemplate.updateFirst(query, update, "reservations");
+
+        log.info("Updated designer timeTable for designerId={}", designerId);
     }
 
     // 문자열을 Date로 변환
