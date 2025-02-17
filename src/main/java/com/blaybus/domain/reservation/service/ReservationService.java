@@ -159,6 +159,7 @@ public class ReservationService
     }
 
     public String deleteReservation(String reservationId, String designerId){
+        log.info( "target Reservation: {}", reservationRepository.findOneById(reservationId));
         executeRefund(reservationRepository.findOneById(reservationId));
         log.info("target Reservation: {}", reservationRepository.findOneById(reservationId));
         return reservationRepository.deleteByDidAndRid(designerId, reservationId);
@@ -171,9 +172,12 @@ public class ReservationService
                 kakaoPayService.kakaoCancel(payment);
                 payment.setStatus(CANCELLED);
                 paymentRepository.save(payment);
+                break;
+
             case "BANK_TRANSFER":
                 payment.setStatus(CANCELLED);
                 paymentRepository.save(payment);
+                break;
         }
     }
 
