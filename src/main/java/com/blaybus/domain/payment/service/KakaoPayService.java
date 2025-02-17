@@ -115,8 +115,9 @@ public class KakaoPayService {
         }
     }
     public KakaoCancelResponse kakaoCancel(String tid) {
+        log.info("getCancelAvailableAmount: {}", getCancelAvailableAmount(tid));
         // 최신 취소 가능 금액 조회
-        int cancelAvailableAmount = 1000;
+        int cancelAvailableAmount = getCancelAvailableAmount(tid);
         if (cancelAvailableAmount <= 0) {
             throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
         }
