@@ -160,6 +160,7 @@ public class ReservationService
 
     public String deleteReservation(String reservationId, String designerId){
         executeRefund(reservationRepository.findOneById(reservationId));
+        log.info("target Reservation: {}", reservationRepository.findOneById(reservationId));
         return reservationRepository.deleteByDidAndRid(designerId, reservationId);
     }
 
