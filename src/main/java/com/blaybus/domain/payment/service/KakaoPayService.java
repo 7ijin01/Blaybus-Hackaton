@@ -6,6 +6,8 @@ import com.blaybus.domain.payment.entity.KakaoPayInfo;
 import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.entity.enums.PaymentMethod;
 import com.blaybus.domain.payment.entity.enums.PaymentStatus;
+import com.blaybus.domain.payment.exception.BusinessLogicException;
+import com.blaybus.domain.payment.exception.ExceptionCode;
 import com.blaybus.domain.payment.repository.PaymentRepository;
 import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.ReservationRepository;
@@ -79,38 +81,30 @@ public class KakaoPayService {
 
 
 
-    public KakaoCancelResponse kakaoCancel(String tid) {
-        // 최신 취소 가능 금액 조회
-        int cancelAvailableAmount = 1000;
-        if (cancelAvailableAmount <= 0) {
-            throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
+    public KakaoCancelResponse kakaoCancel(PaymentEntity payment) {
+        if (payment == null || payment.getKakaoPayInfo() == null) {
+            throw new BusinessLogicException(ExceptionCode.PAY_NOT_FOUND);
         }
 
-        int cancelAmount = Math.min(cancelAvailableAmount, 10000); // 취소 가능 금액과 비교
-        int cancelVatAmount = cancelAmount / 11; // 부가세 계산
-        int cancelTaxFreeAmount = cancelAmount - cancelVatAmount; // 비과세 계산
+        KakaoPayInfo kakaoPayInfo = payment.getKakaoPayInfo();
 
-        Map<String, String> parameters = new HashMap<>();
+
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("cid", payProperties.getCid());
-        parameters.put("tid", tid);
-        parameters.put("cancel_amount", String.valueOf(cancelAmount));
-        parameters.put("cancel_tax_free_amount", String.valueOf(cancelTaxFreeAmount));
-        parameters.put("cancel_vat_amount", String.valueOf(cancelVatAmount));
-        parameters.put("cancel_available_amount", String.valueOf(cancelAvailableAmount));
+        parameters.put("tid", kakaoPayInfo.getTid());
+        parameters.put("cancel_amount", kakaoPayInfo.getTotalAmount());
+        parameters.put("cancel_tax_free_amount", kakaoPayInfo.getTaxFreeAmount());
+        parameters.put("partner_order_id", kakaoPayInfo.getPartnerOrderId());
+        parameters.put("partner_user_id", kakaoPayInfo.getPartnerUserId());
 
-
-// 🚨 `cancel_amount`가 0이면 요청하지 않음
-        if (cancelAmount <= 0) {
-            throw new IllegalStateException("🚨 취소 요청 금액이 0입니다. 취소할 수 없습니다.");
-        }
-
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
-        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(parameters, getHeaders());
 
         KakaoCancelResponse cancelResponse = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/cancel",
                 requestEntity,
-                KakaoCancelResponse.class);
+                KakaoCancelResponse.class
+        );
+
         return cancelResponse;
     }
     /**

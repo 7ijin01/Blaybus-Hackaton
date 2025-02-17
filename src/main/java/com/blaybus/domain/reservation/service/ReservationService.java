@@ -168,7 +168,7 @@ public class ReservationService
         PaymentEntity payment = paymentRepository.findByReservationId(reservation.getId());
         switch (reservation.getMethod()){
             case "KAKAOPAY":
-                kakaoPayService.kakaoCancel(findTidFromKakaoPayment(reservation.getId()));
+                kakaoPayService.kakaoCancel(payment);
                 payment.setStatus(CANCELLED);
                 paymentRepository.save(payment);
             case "BANK_TRANSFER":
@@ -177,8 +177,4 @@ public class ReservationService
         }
     }
 
-    public String findTidFromKakaoPayment(String reservationId){
-        PaymentEntity payment = paymentRepository.findByReservationId(reservationId);
-        return payment.getKakaoPayInfo().getTid();
-    }
 }
