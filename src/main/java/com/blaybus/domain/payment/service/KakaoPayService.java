@@ -79,7 +79,7 @@ public class KakaoPayService {
 
 
     public int getCancelAvailableAmount(String tid) {
-        String url = "https://open-api.kakaopay.com/online/v1/payment/order";
+        String url = "https://open-api.kakaopay.com/online/v1/payment/cancel";
         RestTemplate restTemplate = new RestTemplate();
 
         try {
