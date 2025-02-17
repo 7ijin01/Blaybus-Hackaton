@@ -1,10 +1,7 @@
 package com.blaybus.domain.payment.service;
 
 import com.blaybus.KakaoPayProperties;
-import com.blaybus.domain.payment.dto.KakaoApproveRequestDTO;
-import com.blaybus.domain.payment.dto.KakaoApproveResponseDTO;
-import com.blaybus.domain.payment.dto.KakaoPayReadyResponseDTO;
-import com.blaybus.domain.payment.dto.KakaoPayRequestDTO;
+import com.blaybus.domain.payment.dto.*;
 import com.blaybus.domain.payment.entity.KakaoPayInfo;
 import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.entity.enums.PaymentMethod;
@@ -80,6 +77,35 @@ public class KakaoPayService {
     }
 
 
+    public KakaoCancelResponse kakaoCancel(String tid) {
+        // 카카오페이 요청
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cid", payProperties.getCid());
+        parameters.put("tid", tid);
+        parameters.put("cancel_amount", "2200");
+        parameters.put("cancel_tax_free_amount", "0");
+        parameters.put("cancel_vat_amount", "0");
+
+        // 파라미터, 헤더
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+
+        // 외부에 보낼 url
+        RestTemplate restTemplate = new RestTemplate();
+
+        KakaoCancelResponse cancelResponse = restTemplate.postForObject(
+                "https://open-api.kakaopay.com/online/v1/payment/cancel",
+                requestEntity,
+                KakaoCancelResponse.class);
+
+        System.out.println();
+        System.out.println();
+        System.out.println(cancelResponse);
+        System.out.println();
+        System.out.println();
+
+        return cancelResponse;
+    }
+
     /**
      * 결제 완료 승인
      */
@@ -138,6 +164,7 @@ public class KakaoPayService {
 
         Reservation reservation=reservationRepository.findOneById(payment.getReservationId());
         reservation.setStatus("CONFIRMED");
+        reservation.setMethod(String.valueOf(PaymentMethod.KAKAOPAY));
 
         reservationRepository.save(reservation);
         paymentRepository.save(payment);  // MongoDB에 저장

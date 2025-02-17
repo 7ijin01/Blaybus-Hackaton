@@ -2,6 +2,8 @@ package com.blaybus.domain.reservation.service;
 
 import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.repository.PaymentRepository;
+import com.blaybus.domain.payment.service.BankTransferService;
+import com.blaybus.domain.payment.service.KakaoPayService;
 import com.blaybus.global.jwt.JwtUtil;
 import com.blaybus.domain.reservation.exception.CustomException;
 import com.blaybus.domain.reservation.exception.ExceptionCode;
@@ -40,6 +42,8 @@ public class ReservationService
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
     private final DesignerService designerService;
+    private final KakaoPayService kakaoPayService;
+    private final BankTransferService bankTransferService;
     private final JwtUtil jwtUtil;
 
     //유저 코드 생성이후 연동할 예정
@@ -154,9 +158,29 @@ public class ReservationService
     }
 
     public String deleteReservation(String reservationId, String designerId){
-        PaymentEntity payment = paymentRepository.findByReservationId(reservationId);
-        payment.setStatus(CANCELLED);
-        paymentRepository.save(payment);
+        executeRefund(reservationRepository.findOneById(reservationId));
         return reservationRepository.deleteByDidAndRid(designerId, reservationId);
+    }
+
+    public String executeRefund(Reservation reservation){
+        PaymentEntity payment = paymentRepository.findByReservationId(reservation.getId());
+        switch (reservation.getMethod()){
+            case "KAKAOPAY":
+                kakaoPayService.kakaoCancel(findTidFromKakaoPayment(reservation.getId()));
+                payment.setStatus(CANCELLED);
+                paymentRepository.save(payment);
+                return "카카오페이 결제 취소 완료";
+            case "BANK_TRANSFER":
+                payment.setStatus(CANCELLED);
+                paymentRepository.save(payment);
+                return "계좌이체 결제 취소 완료";
+            default:
+                return "취소 중 오류 발생";
+        }
+    }
+
+    public String findTidFromKakaoPayment(String reservaionId){
+        PaymentEntity payment = paymentRepository.findByReservationId(reservaionId);
+        return payment.getKakaoPayInfo().getTid();
     }
 }

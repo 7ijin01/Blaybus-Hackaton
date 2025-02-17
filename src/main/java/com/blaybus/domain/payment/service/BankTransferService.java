@@ -63,6 +63,7 @@ public class BankTransferService {
         //예약 정보 업데이트
         Reservation reservation=reservationRepository.findOneById(paymentEntity.getReservationId());
         reservation.setStatus("CONFIRMED");
+        reservation.setMethod(String.valueOf(PaymentMethod.BANK_TRANSFER));
 
         reservationRepository.save(reservation);
     }
