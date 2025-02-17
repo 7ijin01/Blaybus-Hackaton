@@ -179,8 +179,8 @@ public class ReservationService
         }
     }
 
-    public String findTidFromKakaoPayment(String reservaionId){
-        PaymentEntity payment = paymentRepository.findByReservationId(reservaionId);
+    public String findTidFromKakaoPayment(String reservationId){
+        PaymentEntity payment = paymentRepository.findByReservationId(reservationId);
         return payment.getKakaoPayInfo().getTid();
     }
 }
