@@ -30,8 +30,10 @@ public class Reservation
     private String designerId;
     private Boolean meet;
     private LocalDate date;
-    private Time start;
-    private Time end;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime start;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime end;
     private String shop;
     private String price;
     private String googleMeetUri;

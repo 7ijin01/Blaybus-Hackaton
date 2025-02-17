@@ -1,6 +1,7 @@
 package com.blaybus.domain.reservation.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,10 @@ public class ReservationRequestDto {
     private String designerId;
     private Boolean meet;
     private LocalDate date;
-    private Time start;
-    private Time end;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime start;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime end;
     private String shop;
     private String price;
 
