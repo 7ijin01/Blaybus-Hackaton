@@ -158,7 +158,7 @@ public class KakaoPayService {
                 .userId(requestDTO.getPartnerUserId())  // 사용자 ID
                 .reservationId(requestDTO.getPartnerOrderId())  // 예약 ID
                 .status(PaymentStatus.SUCCESS)  // 결제 상태 SUCCESS
-                .amount(Double.parseDouble(String.valueOf(approveResponse.getAmount().getTotal())))  // 결제 금액
+                .amount(approveResponse.getAmount())  // 결제 금액
                 .paymentMethod(PaymentMethod.KAKAOPAY)  // 결제 방식 카카오페이
                 .createdAt(LocalDateTime.now())  // 결제 생성 시간
                 .kakaoPayInfo(kakaoPayInfo)  // 카카오페이 결제 정보 저장
