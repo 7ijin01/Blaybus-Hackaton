@@ -105,9 +105,8 @@ public class JwtUtil {
     }
 
     public Authentication getAuthentication(String token) {
-        String trimmedToken = token.trim(); // 공백 제거
-
-        String googleId = getEmail(trimmedToken);
+        log.info("getAuthentication:{} ", token);
+        String googleId = getEmail(token);
         log.info("googleID: {}", googleId);
         if (googleId == null || googleId.isEmpty()) {
             throw new IllegalArgumentException("JWT token does not contain a valid googleId.");
@@ -118,6 +117,8 @@ public class JwtUtil {
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("User not found with googleId: " + googleId);
         }
+
+        log.info("user:{}", userOptional.get());
 
         User user = userOptional.get();
         List<GrantedAuthority> authorities = new ArrayList<>();
