@@ -74,22 +74,26 @@ public class ReservationService
     public ReservationResponseDto.ReservationTimeResponse getReservationsByDesignerAndDate(
             LocalDate date, String designerId) {
 
-        Set<String> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date);
-        log.info("reservedTimes: {}", reservedTimes);
+        List<LocalTime> availableTimes = new ArrayList<>(List.of(
+                LocalTime.of(10, 0), LocalTime.of(10, 30), LocalTime.of(11, 0), LocalTime.of(11, 30),
+                LocalTime.of(12, 0), LocalTime.of(12, 30), LocalTime.of(13, 0), LocalTime.of(13, 30),
+                LocalTime.of(14, 0), LocalTime.of(14, 30), LocalTime.of(15, 0), LocalTime.of(15, 30),
+                LocalTime.of(16, 0), LocalTime.of(16, 30), LocalTime.of(17, 0), LocalTime.of(17, 30),
+                LocalTime.of(18, 0), LocalTime.of(18, 30), LocalTime.of(19, 0), LocalTime.of(19, 30)
+        ));
 
-        List<String> availableTimes = new ArrayList<>();
-        LocalTime time = LocalTime.of(10, 0);
-        LocalTime closingTime = LocalTime.of(20, 0);
+        Set<LocalTime> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date)
+                .stream()
+                .map(LocalTime::parse)
+                .collect(Collectors.toSet());
 
-        while (time.isBefore(closingTime)) {
-            if (!reservedTimes.contains(time.toString())) {
-                availableTimes.add(time.toString());
-            }
-            time = time.plusMinutes(30);
-        }
-        log.info("availableTimes: {}", availableTimes);
+        availableTimes.removeAll(reservedTimes);
 
-        return new ReservationResponseDto.ReservationTimeResponse(date.toString(), availableTimes);
+        List<String> availableTimesStr = availableTimes.stream()
+                .map(LocalTime::toString)
+                .collect(Collectors.toList());
+
+        return new ReservationResponseDto.ReservationTimeResponse(date.toString(), availableTimesStr);
     }
 
     public List<Reservation> findReservationsByUserId(String accessToken){
