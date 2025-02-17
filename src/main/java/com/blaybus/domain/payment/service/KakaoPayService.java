@@ -12,10 +12,7 @@ import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -82,27 +79,52 @@ public class KakaoPayService {
 
 
     public int getCancelAvailableAmount(String tid) {
-        String url = "https://open-api.kakaopay.com/online/v1/payment/order?tid=" + tid;
-
+        String url = "https://open-api.kakaopay.com/online/v1/payment/order";
         RestTemplate restTemplate = new RestTemplate();
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(
-                    url, HttpMethod.GET, new HttpEntity<>(getHeaders()), String.class);
 
+        try {
+            HttpHeaders headers = getHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, String> body = new HashMap<>();
+            body.put("tid", tid);
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+            // 응답이 null인지 확인
+            if (response.getBody() == null) {
+                System.out.println("🚨 응답 바디가 null입니다.");
+                return 0;
+            }
+
+            // JSON 객체 변환
             JSONObject jsonResponse = new JSONObject(response.getBody());
+
+            // `cancel_available_amount`가 존재하는지 확인
+            if (!jsonResponse.has("cancel_available_amount")) {
+                System.out.println("🚨 `cancel_available_amount` 키가 없습니다.");
+                return 0;
+            }
+
             return jsonResponse.getJSONObject("cancel_available_amount").getInt("total");
+
         } catch (Exception e) {
             System.out.println("🚨 취소 가능 금액 조회 실패: " + e.getMessage());
-            return 0; // 기본적으로 취소 불가능 상태로 반환
+            return 0;
         }
     }
     public KakaoCancelResponse kakaoCancel(String tid) {
         // 최신 취소 가능 금액 조회
-        int cancelAmount = Math.min(getCancelAvailableAmount(tid), 10000); // 요청 금액과 취소 가능 금액 비교
+        int cancelAvailableAmount = getCancelAvailableAmount(tid);
+        if (cancelAvailableAmount <= 0) {
+            throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
+        }
+
+        int cancelAmount = Math.min(cancelAvailableAmount, 10000); // 취소 가능 금액과 비교
         int cancelVatAmount = cancelAmount / 11; // 부가세 계산
         int cancelTaxFreeAmount = cancelAmount - cancelVatAmount; // 비과세 계산
 
-        // 카카오페이 요청 파라미터
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", payProperties.getCid());
         parameters.put("tid", tid);
@@ -110,25 +132,21 @@ public class KakaoPayService {
         parameters.put("cancel_tax_free_amount", String.valueOf(cancelTaxFreeAmount));
         parameters.put("cancel_vat_amount", String.valueOf(cancelVatAmount));
 
-        // 파라미터, 헤더
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+// 🚨 `cancel_amount`가 0이면 요청하지 않음
+        if (cancelAmount <= 0) {
+            throw new IllegalStateException("🚨 취소 요청 금액이 0입니다. 취소할 수 없습니다.");
+        }
 
-        // 외부에 보낼 url
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
         RestTemplate restTemplate = new RestTemplate();
 
         KakaoCancelResponse cancelResponse = restTemplate.postForObject(
                 "https://open-api.kakaopay.com/online/v1/payment/cancel",
                 requestEntity,
                 KakaoCancelResponse.class);
-
-        System.out.println();
-        System.out.println();
-        System.out.println(cancelResponse);
-        System.out.println();
-        System.out.println();
-
         return cancelResponse;
-    }/**
+    }
+    /**
      * 결제 완료 승인
      */
     public KakaoApproveResponseDTO approveResponse(KakaoApproveRequestDTO requestDTO) {
