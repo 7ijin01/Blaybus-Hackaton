@@ -78,47 +78,10 @@ public class KakaoPayService {
 
 
 
-    public int getCancelAvailableAmount(String tid) {
-        String url = "https://open-api.kakaopay.com/online/v1/payment/cancel";
-        RestTemplate restTemplate = new RestTemplate();
 
-        try {
-            HttpHeaders headers = getHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            Map<String, String> body = new HashMap<>();
-            body.put("tid", tid);
-            log.info("body: {}", body.get("tid"));
-
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
-            log.info("entity: {}", entity.getBody());
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-            log.info("response: {}", response.getBody());
-            // 응답이 null인지 확인
-            if (response.getBody() == null) {
-                System.out.println("🚨 응답 바디가 null입니다.");
-                return 0;
-            }
-
-            // JSON 객체 변환
-            JSONObject jsonResponse = new JSONObject(response.getBody());
-            log.info("jsonResponse: {}", jsonResponse);
-            // `cancel_available_amount`가 존재하는지 확인
-            if (!jsonResponse.has("cancel_available_amount")) {
-                System.out.println("🚨 `cancel_available_amount` 키가 없습니다.");
-                return 0;
-            }
-
-            return jsonResponse.getJSONObject("cancel_available_amount").getInt("total");
-
-        } catch (Exception e) {
-            System.out.println("🚨 취소 가능 금액 조회 실패: " + e.getMessage());
-            return 0;
-        }
-    }
     public KakaoCancelResponse kakaoCancel(String tid) {
         // 최신 취소 가능 금액 조회
-        int cancelAvailableAmount = getCancelAvailableAmount(tid);
+        int cancelAvailableAmount = 1000;
         if (cancelAvailableAmount <= 0) {
             throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
         }
@@ -133,6 +96,8 @@ public class KakaoPayService {
         parameters.put("cancel_amount", String.valueOf(cancelAmount));
         parameters.put("cancel_tax_free_amount", String.valueOf(cancelTaxFreeAmount));
         parameters.put("cancel_vat_amount", String.valueOf(cancelVatAmount));
+        parameters.put("cancel_available_amount", String.valueOf(cancelAvailableAmount));
+
 
 // 🚨 `cancel_amount`가 0이면 요청하지 않음
         if (cancelAmount <= 0) {

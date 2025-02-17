@@ -154,7 +154,7 @@ public class ReservationService
 
     public List<Reservation> findReservationsByUserId(String accessToken){
         log.info("accessToken:{}", accessToken);
-        String userId = jwtUtil.getEmail(accessToken.trim());
+        String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
         return reservationRepository.findAllByGoogleId(userId);
     }
 
