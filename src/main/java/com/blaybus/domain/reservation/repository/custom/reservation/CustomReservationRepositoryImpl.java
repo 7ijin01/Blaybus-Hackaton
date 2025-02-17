@@ -24,7 +24,7 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     public Reservation findOneById(String reservationId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(reservationId));
-        return MongoRepositoryUtil.findOneById(mongoTemplate, reservationId, Reservation.class);
+        return mongoTemplate.findOne(query, Reservation.class);
     }
 
     @Override
