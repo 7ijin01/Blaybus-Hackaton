@@ -60,67 +60,7 @@ public class ReservationService
 
     }
 
-    //    public ReservationResponseDto updateReservationMeet(ReservationRequestDto requestDto)
-//    {
-//        String reservationId= requestDto.getReservationId();
-//        log.info("resID: {}", reservationId);
-//        Reservation oldReservation = reservationRepository.findOneById(reservationId);
-//        log.info("oldID:{}", oldReservation.getId());
-//        if (oldReservation == null) {
-//            throw new IllegalArgumentException("no reservation " + reservationId);
-//        }
-//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
-//        log.info("newID:{}", updatedReservation.getId());
-//        return new ReservationResponseDto(updatedReservation);
-//    }
-//
-//
-//    public ReservationResponseDto updateReservationDesigner(ReservationRequestDto requestDto)
-//    {
-//        String reservationId= requestDto.getReservationId();
-//        Reservation oldReservation = reservationRepository.findOneById(reservationId);
-//        if (oldReservation == null) {
-//            throw new IllegalArgumentException("no reservation " + reservationId);
-//        }
-//        String designerId=requestDto.getDesignerId();
-//        Designer designer= designerService.getOneDesigner(designerId);
-//        if (designer == null) {
-//            throw new IllegalArgumentException("no designerss" + designerId);
-//        }
-//        requestDto.setPrice(requestDto.getMeet() == null ?
-//                oldReservation.getPrice() :
-//                (requestDto.getMeet()) ?
-//                                designer.getPrice_meet() :
-//                                designer.getPrice_not_meet())
-//
-//                ;
-//        requestDto.setDesignerId(designerId);
-//        requestDto.setShop(designer.getAddress());
-//
-//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
-//        reservationRepository.save(updatedReservation);
-//
-//
-//        return new ReservationResponseDto(updatedReservation);
-//    }
-//
-//
-//    public ReservationResponseDto updateReservationDateAndTime(ReservationRequestDto requestDto)
-//    {
-//        String reservationId=requestDto.getReservationId();
-//        Reservation oldReservation=reservationRepository.findOneById(reservationId);
-//
-//        LocalDate date=requestDto.getDate();
-//        LocalTime start=requestDto.getStart();
-//        LocalTime end= start.plusMinutes(30);
-//
-//        Reservation updatedReservation = Reservation.buildReservation(oldReservation, requestDto);
-//
-//        reservationRepository.save(updatedReservation);
-//        return new ReservationResponseDto(updatedReservation);
-//    }
-//
-//
+
     public void updateReservationGoogleMeetUri(String reservationId,String googleMeetUri)
     {
         Reservation reservation=reservationRepository.findOneById(reservationId);
