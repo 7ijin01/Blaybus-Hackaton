@@ -11,8 +11,11 @@ import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -77,16 +80,24 @@ public class KakaoPayService {
     }
 
 
+
     public KakaoCancelResponse kakaoCancel(String tid) {
-        // 카카오페이 요청
+        // 최신 취소 가능 금액 조회
+        int cancelAmount = 10000;
+        if (cancelAmount <= 0) {
+            throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
+        }
+
+        int cancelVatAmount = cancelAmount / 11; // 부가세 계산
+        int cancelTaxFreeAmount = cancelAmount - cancelVatAmount; // 비과세 계산
+
+        // 카카오페이 요청 파라미터
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", payProperties.getCid());
         parameters.put("tid", tid);
-        parameters.put("cancel_amount", "2200");
-        parameters.put("cancel_tax_free_amount", "0");
-        parameters.put("cancel_vat_amount", "0");
-        parameters.put("cancel_available_amount", "2200");
-
+        parameters.put("cancel_amount", String.valueOf(cancelAmount));
+        parameters.put("cancel_tax_free_amount", String.valueOf(cancelTaxFreeAmount));
+        parameters.put("cancel_vat_amount", String.valueOf(cancelVatAmount));
 
         // 파라미터, 헤더
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
@@ -106,9 +117,7 @@ public class KakaoPayService {
         System.out.println();
 
         return cancelResponse;
-    }
-
-    /**
+    }/**
      * 결제 완료 승인
      */
     public KakaoApproveResponseDTO approveResponse(KakaoApproveRequestDTO requestDTO) {
