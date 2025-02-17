@@ -11,7 +11,7 @@ import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -81,13 +81,24 @@ public class KakaoPayService {
 
 
 
+    public int getCancelAvailableAmount(String tid) {
+        String url = "https://open-api.kakaopay.com/online/v1/payment/order?tid=" + tid;
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.GET, new HttpEntity<>(getHeaders()), String.class);
+
+            JSONObject jsonResponse = new JSONObject(response.getBody());
+            return jsonResponse.getJSONObject("cancel_available_amount").getInt("total");
+        } catch (Exception e) {
+            System.out.println("🚨 취소 가능 금액 조회 실패: " + e.getMessage());
+            return 0; // 기본적으로 취소 불가능 상태로 반환
+        }
+    }
     public KakaoCancelResponse kakaoCancel(String tid) {
         // 최신 취소 가능 금액 조회
-        int cancelAmount = 10000;
-        if (cancelAmount <= 0) {
-            throw new IllegalStateException("🚨 취소할 수 있는 금액이 없습니다.");
-        }
-
+        int cancelAmount = Math.min(getCancelAvailableAmount(tid), 10000); // 요청 금액과 취소 가능 금액 비교
         int cancelVatAmount = cancelAmount / 11; // 부가세 계산
         int cancelTaxFreeAmount = cancelAmount - cancelVatAmount; // 비과세 계산
 
