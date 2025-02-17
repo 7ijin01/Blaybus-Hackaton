@@ -18,7 +18,7 @@ public class BankTransferRequestDTO {
     private String designerId;
 
     @Schema(description = "결제 금액")
-    private double amount;
+    private AmountDTO amount;
 
     @Schema(description = "계좌번호")
     private String accountNumber;
