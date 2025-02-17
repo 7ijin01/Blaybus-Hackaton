@@ -91,7 +91,7 @@ public class ReservationController
 
     @Operation(summary = "예약 취소")
     @DeleteMapping("")
-    public ResponseEntity<?> delete(
+    public ResponseEntity<String> delete(
             //@RequestHeader("Authorization") String accessToken
             @RequestParam String reservationId,
             @RequestParam String designerId) {

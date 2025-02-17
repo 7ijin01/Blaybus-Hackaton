@@ -85,6 +85,8 @@ public class KakaoPayService {
         parameters.put("cancel_amount", "2200");
         parameters.put("cancel_tax_free_amount", "0");
         parameters.put("cancel_vat_amount", "0");
+        parameters.put("cancel_available_amount", "0");
+
 
         // 파라미터, 헤더
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());

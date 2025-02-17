@@ -162,20 +162,16 @@ public class ReservationService
         return reservationRepository.deleteByDidAndRid(designerId, reservationId);
     }
 
-    public String executeRefund(Reservation reservation){
+    public void executeRefund(Reservation reservation){
         PaymentEntity payment = paymentRepository.findByReservationId(reservation.getId());
         switch (reservation.getMethod()){
             case "KAKAOPAY":
                 kakaoPayService.kakaoCancel(findTidFromKakaoPayment(reservation.getId()));
                 payment.setStatus(CANCELLED);
                 paymentRepository.save(payment);
-                return "카카오페이 결제 취소 완료";
             case "BANK_TRANSFER":
                 payment.setStatus(CANCELLED);
                 paymentRepository.save(payment);
-                return "계좌이체 결제 취소 완료";
-            default:
-                return "취소 중 오류 발생";
         }
     }
 
