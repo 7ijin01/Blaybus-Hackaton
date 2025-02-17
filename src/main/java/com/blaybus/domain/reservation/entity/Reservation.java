@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -29,8 +30,8 @@ public class Reservation
     private String designerId;
     private Boolean meet;
     private LocalDate date;
-    private LocalTime start;
-    private LocalTime end;
+    private Time start;
+    private Time end;
     private String shop;
     private String price;
     private String googleMeetUri;
