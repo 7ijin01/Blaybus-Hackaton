@@ -88,10 +88,12 @@ public class KakaoPayService {
 
             Map<String, String> body = new HashMap<>();
             body.put("tid", tid);
+            log.info("body: {}", body.get("tid"));
 
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
+            log.info("entity: {}", entity.getBody());
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-
+            log.info("response: {}", response.getBody());
             // 응답이 null인지 확인
             if (response.getBody() == null) {
                 System.out.println("🚨 응답 바디가 null입니다.");
@@ -100,7 +102,7 @@ public class KakaoPayService {
 
             // JSON 객체 변환
             JSONObject jsonResponse = new JSONObject(response.getBody());
-
+            log.info("jsonResponse: {}", jsonResponse);
             // `cancel_available_amount`가 존재하는지 확인
             if (!jsonResponse.has("cancel_available_amount")) {
                 System.out.println("🚨 `cancel_available_amount` 키가 없습니다.");
@@ -115,7 +117,6 @@ public class KakaoPayService {
         }
     }
     public KakaoCancelResponse kakaoCancel(String tid) {
-        log.info("getCancelAvailableAmount: {}", getCancelAvailableAmount(tid));
         // 최신 취소 가능 금액 조회
         int cancelAvailableAmount = getCancelAvailableAmount(tid);
         if (cancelAvailableAmount <= 0) {
