@@ -158,11 +158,11 @@ public class ReservationService
         return reservationRepository.findAllByGoogleId(userId);
     }
 
-    public String deleteReservation(String reservationId, String designerId){
+    public String deleteReservation(String reservationId){
         log.info( "target Reservation: {}", reservationRepository.findOneById(reservationId));
         executeRefund(reservationRepository.findOneById(reservationId));
         log.info("target Reservation: {}", reservationRepository.findOneById(reservationId));
-        return reservationRepository.deleteByDidAndRid(designerId, reservationId);
+        return reservationRepository.deleteByRid(reservationId);
     }
 
     public void executeRefund(Reservation reservation){

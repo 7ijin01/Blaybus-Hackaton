@@ -11,5 +11,5 @@ public interface CustomReservationRepository
     Reservation findOneById(String reservationId);
     Set<String> findByDesignerIdAndDate(String designerId, LocalDate date);
     List<Reservation> findAllByGoogleId(String googleId);
-    String deleteByDidAndRid(String designerId, String reservationId);
+    String deleteByRid(String reservationId);
 }

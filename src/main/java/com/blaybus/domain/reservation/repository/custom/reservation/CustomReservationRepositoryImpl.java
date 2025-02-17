@@ -46,8 +46,8 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     }
 
     @Override
-    public String deleteByDidAndRid(String designerId, String reservationId){
-        Query query = new Query(Criteria.where("_id").is(reservationId).and("designerId").is(designerId));
+    public String deleteByRid(String reservationId){
+        Query query = new Query(Criteria.where("_id").is(reservationId));
         Reservation deletedReservation =  mongoTemplate.findOne(query, Reservation.class);
 
         if (deletedReservation != null) {

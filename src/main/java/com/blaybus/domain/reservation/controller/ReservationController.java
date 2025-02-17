@@ -93,8 +93,7 @@ public class ReservationController
     @DeleteMapping("")
     public ResponseEntity<String> delete(
             //@RequestHeader("Authorization") String accessToken
-            @RequestParam String reservationId,
-            @RequestParam String designerId) {
-        return ResponseEntity.ok(reservationService.deleteReservation(reservationId, designerId));
+            @RequestParam String reservationId) {
+        return ResponseEntity.ok(reservationService.deleteReservation(reservationId));
     }
 }
