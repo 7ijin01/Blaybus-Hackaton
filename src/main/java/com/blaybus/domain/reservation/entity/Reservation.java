@@ -3,6 +3,7 @@ package com.blaybus.domain.reservation.entity;
 
 import com.blaybus.domain.reservation.dto.ReservationRequestDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import nonapi.io.github.classgraph.json.Id;
@@ -30,8 +31,10 @@ public class Reservation
     private String designerId;
     private Boolean meet;
     private LocalDate date;
+    @Schema(type = "string", pattern = "HH:mm:ss", example = "14:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime start;
+    @Schema(type = "string", pattern = "HH:mm:ss", example = "14:30:00")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime end;
     private String shop;
