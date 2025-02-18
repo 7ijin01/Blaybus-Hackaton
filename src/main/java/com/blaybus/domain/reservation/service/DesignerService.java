@@ -32,7 +32,7 @@ public class DesignerService
                 file.getContentType()
         );
 
-        String imageUrl = "/designers/portfolio/load" + objectId.toString();
+        String imageUrl = "/designers/portfolio/load?objectId=" + objectId.toString();
 
         Designer designer = designerRepository.findOneById(designerId);
 
