@@ -26,6 +26,7 @@ public class DesignerService
     private final DesignerRepository designerRepository;
     public final GridFsTemplate gridFsTemplate;
     private final XuggleThumbnailGenerator thumbnailGenerator;
+    private final String URL_PREFIX = "https://blaybus-glowup.com/designers/portfolio/load?objectId=";
     public String upload(MultipartFile file, String designerId) throws IOException {
         // 1. 파일을 GridFS에 저장
         ObjectId objectId = gridFsTemplate.store(
@@ -35,13 +36,13 @@ public class DesignerService
         );
 
         // 2. 파일의 URL 생성
-        String fileUrl = "https://blaybus-glowup.com/designers/portfolio/load?objectId=" + objectId.toString();
+        String fileUrl = URL_PREFIX + objectId.toString();
 
         // 3. 썸네일 생성 (비디오 파일인 경우)
         String thumbnailUrl = null;
         if (file.getContentType() != null && file.getContentType().startsWith("video/")) {
             ObjectId thumbnailId = thumbnailGenerator.saveThumbnail(objectId.toHexString());
-            thumbnailUrl = "https://blaybus-glowup.com/thumbnails/" + thumbnailId.toHexString();
+            thumbnailUrl = URL_PREFIX + thumbnailId.toHexString();
         }
 
         // 4. 디자이너의 포트폴리오 업데이트
@@ -49,14 +50,17 @@ public class DesignerService
         if (designer.getPortfolios() == null) {
             designer.setPortfolios(new ArrayList<>());
         }
+        List<String> imageList = designer.getPortfolios();
 
-        List<String> arrayList = designer.getPortfolios();
-        Objects.requireNonNull(arrayList).add(fileUrl);
-
-        // 5. 썸네일이 존재하면 포트폴리오 리스트에도 추가
-        if (thumbnailUrl != null) {
-            Objects.requireNonNull(arrayList).add(thumbnailUrl);
+        if(file.getContentType().startsWith("video/")){
+            List<String> videoList = designer.getVideos();
+            Objects.requireNonNull(videoList).add(fileUrl);
+            Objects.requireNonNull(imageList).add(thumbnailUrl);
+        } else if (file.getContentType().startsWith("image/")) {
+            Objects.requireNonNull(imageList).add(fileUrl);
         }
+
+
 
         designerRepository.save(designer);
 
