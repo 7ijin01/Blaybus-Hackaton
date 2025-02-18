@@ -45,7 +45,7 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(Criteria.where("userId").is(googleId)),
 
-                Aggregation.lookup("designer", "designerId", "_id", "designerInfo"),
+                Aggregation.lookup("designers", "designerId", "_id", "designerInfo"),
 
                 Aggregation.unwind("designerInfo"),
 
