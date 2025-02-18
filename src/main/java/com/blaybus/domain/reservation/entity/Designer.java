@@ -23,7 +23,8 @@ public class Designer
     private Map<String, Integer> price; // { "offline": 40000, "online": 20000 }
     private List<String> type; // ["대면", "비대면"]
     private String profile;
-    private List<String> portfolios;
+    private List<String> portfolios; // 사진
+    private List<String> videos; // 상세 페이지에 띄울 영상
     private String field;
     private String introduction;
 
