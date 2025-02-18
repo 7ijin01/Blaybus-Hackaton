@@ -22,6 +22,9 @@ dependencies {
 	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
 	implementation 'org.json:json:20231013'
 
+	implementation group: 'org.bytedeco', name: 'javacv', version: '1.5.11'
+
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 	// Spring Boot Starter

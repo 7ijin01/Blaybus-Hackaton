@@ -2,6 +2,7 @@ package com.blaybus.domain.reservation.service;
 
 import com.blaybus.domain.reservation.entity.Designer;
 import com.blaybus.domain.reservation.repository.DesignerRepository;
+import com.blaybus.global.util.XuggleThumbnailGenerator;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
@@ -24,24 +25,39 @@ public class DesignerService
 {
     private final DesignerRepository designerRepository;
     public final GridFsTemplate gridFsTemplate;
-
+    private final XuggleThumbnailGenerator thumbnailGenerator;
     public String upload(MultipartFile file, String designerId) throws IOException {
+        // 1. 파일을 GridFS에 저장
         ObjectId objectId = gridFsTemplate.store(
                 file.getInputStream(),
                 file.getOriginalFilename(),
                 file.getContentType()
         );
 
-        String imageUrl = "https://blaybus-glowup.com/designers/portfolio/load?objectId=" + objectId.toString();
+        // 2. 파일의 URL 생성
+        String fileUrl = "https://blaybus-glowup.com/designers/portfolio/load?objectId=" + objectId.toString();
 
+        // 3. 썸네일 생성 (비디오 파일인 경우)
+        String thumbnailUrl = null;
+        if (file.getContentType() != null && file.getContentType().startsWith("video/")) {
+            ObjectId thumbnailId = thumbnailGenerator.saveThumbnail(objectId.toHexString());
+            thumbnailUrl = "https://blaybus-glowup.com/thumbnails/" + thumbnailId.toHexString();
+        }
+
+        // 4. 디자이너의 포트폴리오 업데이트
         Designer designer = designerRepository.findOneById(designerId);
-
-        if(designer.getPortfolios() == null){
+        if (designer.getPortfolios() == null) {
             designer.setPortfolios(new ArrayList<>());
         }
 
         List<String> arrayList = designer.getPortfolios();
-        Objects.requireNonNull(arrayList).add(imageUrl);
+        Objects.requireNonNull(arrayList).add(fileUrl);
+
+        // 5. 썸네일이 존재하면 포트폴리오 리스트에도 추가
+        if (thumbnailUrl != null) {
+            Objects.requireNonNull(arrayList).add(thumbnailUrl);
+        }
+
         designerRepository.save(designer);
 
         return objectId.toHexString();
@@ -55,6 +71,9 @@ public class DesignerService
         GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(objectId)));
 
         GridFsResource resource = gridFsTemplate.getResource(file);
+        if (resource.getContentType().startsWith("video/")){
+
+        }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(resource.getContentType())) // 이미지 타입 설정
