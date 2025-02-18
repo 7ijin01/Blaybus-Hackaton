@@ -130,7 +130,10 @@ public class ReservationService
 
     public List<Reservation> convertIdToName(List<Reservation> reservations){
         for(Reservation reservation : reservations){
+            log.info("designerId: {]", reservation.getDesignerId());
             Designer designer = designerRepository.findOneById(reservation.getDesignerId());
+            log.info("designer: {]", designer.getId());
+
             reservation.setDesignerId(designer.getName());
         }
         return reservations;
