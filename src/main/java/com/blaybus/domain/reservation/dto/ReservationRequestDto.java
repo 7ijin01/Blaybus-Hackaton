@@ -19,10 +19,13 @@ import java.time.LocalTime;
 public class ReservationRequestDto {
     private String designerId;
     private Boolean meet;
-    private LocalDate date;
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
-    private LocalTime start;
-    @JsonDeserialize(using = LocalTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private String date; // 날짜는 문자열로 받음
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    private LocalTime start; // start를 문자열("HH:mm:ss")로 변환
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime end;
     private String shop;
     private String price;
