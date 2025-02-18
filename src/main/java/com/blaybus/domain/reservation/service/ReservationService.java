@@ -48,9 +48,9 @@ public class ReservationService
 
     //유저 코드 생성이후 연동할 예정
     public ReservationResponseDto createReservation(String accessToken, ReservationRequestDto requestDto) {
-        String googleId = jwtUtil.getEmail(accessToken);
+        String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
         Reservation reservation=Reservation.buildReservation(requestDto);
-        reservation.setUserId(googleId);
+        reservation.setUserId(userId);
         reservation.setStatus("PENDING");
         reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
