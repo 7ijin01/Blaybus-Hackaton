@@ -53,9 +53,6 @@ public class JwtUtil {
 
     public Boolean isExpired(String token) {
         try {
-            if (token.startsWith("ya")){
-                return false;
-            }
             Claims claims = extractClaims(token);
             Date expiration = claims.getExpiration();
 
