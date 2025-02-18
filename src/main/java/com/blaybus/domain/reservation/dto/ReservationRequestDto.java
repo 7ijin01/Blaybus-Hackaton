@@ -29,6 +29,7 @@ public class ReservationRequestDto {
     private LocalTime end;
     private String shop;
     private String price;
+    private String method;
 
 }
 

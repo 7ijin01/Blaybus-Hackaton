@@ -65,6 +65,8 @@ public class Reservation
                 .end(dto.getEnd())
                 .shop(dto.getShop())
                 .price(dto.getPrice())
+                .method(dto.getMethod())
+                .status("PENDING")
                 .build();
     }
 

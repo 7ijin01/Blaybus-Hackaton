@@ -53,13 +53,9 @@ public class ReservationService
         String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
         Reservation reservation=Reservation.buildReservation(requestDto);
         reservation.setUserId(userId);
-        reservation.setStatus("PENDING");
         reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
-
         return new ReservationResponseDto(reservation);
-
-
     }
 
 
@@ -102,7 +98,8 @@ public class ReservationService
         log.info("accessToken:{}", accessToken);
         String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
         List<Reservation> reservations = reservationRepository.findAllByGoogleId(userId);
-        return convertIdToName(reservations );
+        List<Reservation> convertedRes = convertIdToName(reservations);
+        return convertedRes;
     }
 
     public String deleteReservation(String reservationId){
@@ -130,9 +127,9 @@ public class ReservationService
 
     public List<Reservation> convertIdToName(List<Reservation> reservations){
         for(Reservation reservation : reservations){
-            log.info("designerId: {]", reservation.getDesignerId());
+            log.info("designerId: {}", reservation.getDesignerId());
             Designer designer = designerRepository.findOneById(reservation.getDesignerId());
-            log.info("designer: {]", designer.getId());
+            log.info("designer: {}", designer.getName());
 
             reservation.setDesignerId(designer.getName());
         }
