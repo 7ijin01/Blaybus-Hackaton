@@ -5,7 +5,6 @@ import com.blaybus.domain.reservation.repository.DesignerRepository;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,10 +14,8 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 @Service
@@ -55,59 +52,13 @@ public class DesignerService
     }
 
     public ResponseEntity<Resource> streamPortfolios(String objectId){
-        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(new ObjectId(objectId))));
-        String rangeHeader = "bytes=0-1048576";
-        if (file == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다.");
-        }
+        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(objectId)));
 
         GridFsResource resource = gridFsTemplate.getResource(file);
-        String contentType = Optional.ofNullable(resource.getContentType()).orElse("application/octet-stream");
 
-        try {
-            long fileSize = file.getLength();
-            InputStream inputStream = resource.getInputStream();
-
-            // ✅ 1. 이미지 파일이면 그대로 반환 (스트리밍 불필요)
-            if (contentType.startsWith("image/")) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(contentType))
-                        .body(resource);
-            }
-
-            // ✅ 2. 비디오 파일이면 스트리밍 처리
-            if (contentType.startsWith("video/") && rangeHeader != null) {
-                return handleVideoStreaming(rangeHeader, inputStream, fileSize, contentType);
-            }
-
-            // ✅ 3. 비디오지만 Range 요청이 없는 경우 (iPhone 등에서 발생 가능)
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(contentType))
-                    .body(resource);
-
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일을 읽는 중 오류 발생", e);
-        }
-    }
-    private ResponseEntity<Resource> handleVideoStreaming(String rangeHeader, InputStream inputStream, long fileSize, String contentType) throws IOException {
-        String[] ranges = rangeHeader.replace("bytes=", "").split("-");
-        long start = Long.parseLong(ranges[0]);
-        long end = (ranges.length > 1 && !ranges[1].isEmpty()) ? Long.parseLong(ranges[1]) : fileSize - 1;
-        long chunkSize = end - start + 1;
-
-        byte[] buffer = new byte[(int) chunkSize];
-        inputStream.skip(start);
-        inputStream.read(buffer, 0, (int) chunkSize);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", contentType);
-        headers.set("Accept-Ranges", "bytes");
-        headers.set("Content-Range", "bytes " + start + "-" + end + "/" + fileSize);
-        headers.setContentLength(chunkSize);
-
-        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-                .headers(headers)
-                .body(new ByteArrayResource(buffer));
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(resource.getContentType())) // 이미지 타입 설정
+                .body(resource);
     }
 
     public List<Designer> getAllDesigners()
