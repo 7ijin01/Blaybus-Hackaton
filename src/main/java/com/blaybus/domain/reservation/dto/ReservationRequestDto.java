@@ -30,7 +30,6 @@ public class ReservationRequestDto {
     private String shop;
     private String price;
     private String method;
-
 }
 
 
