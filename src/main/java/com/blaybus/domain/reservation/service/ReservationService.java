@@ -4,6 +4,7 @@ import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.repository.PaymentRepository;
 import com.blaybus.domain.payment.service.BankTransferService;
 import com.blaybus.domain.payment.service.KakaoPayService;
+import com.blaybus.domain.reservation.repository.DesignerRepository;
 import com.blaybus.global.jwt.JwtUtil;
 import com.blaybus.domain.reservation.exception.CustomException;
 import com.blaybus.domain.reservation.exception.ExceptionCode;
@@ -41,6 +42,7 @@ public class ReservationService
 {
     private final ReservationRepository reservationRepository;
     private final PaymentRepository paymentRepository;
+    private final DesignerRepository designerRepository;
     private final DesignerService designerService;
     private final KakaoPayService kakaoPayService;
     private final BankTransferService bankTransferService;
@@ -99,7 +101,8 @@ public class ReservationService
     public List<Reservation> findReservationsByUserId(String accessToken){
         log.info("accessToken:{}", accessToken);
         String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
-        return reservationRepository.findAllByGoogleId(userId);
+        List<Reservation> reservations = reservationRepository.findAllByGoogleId(userId);
+        return convertIdToName(reservations );
     }
 
     public String deleteReservation(String reservationId){
@@ -125,4 +128,11 @@ public class ReservationService
         }
     }
 
+    public List<Reservation> convertIdToName(List<Reservation> reservations){
+        for(Reservation reservation : reservations){
+            Designer designer = designerRepository.findOneById(reservation.getDesignerId());
+            reservation.setDesignerId(designer.getName());
+        }
+        return reservations;
+    }
 }
