@@ -4,6 +4,7 @@ import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -41,8 +42,19 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
     }
     @Override
     public List<Reservation> findAllByGoogleId(String googleId) {
-        Query query = new Query(Criteria.where("userId").is(googleId));
-        return mongoTemplate.find(query, Reservation.class);
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.match(Criteria.where("userId").is(googleId)),
+
+                Aggregation.lookup("designer", "designerId", "_id", "designerInfo"),
+
+                Aggregation.unwind("designerInfo"),
+
+                Aggregation.project()
+                        .andInclude("userId", "date", "start", "end", "shop", "price") // 기존 필드 포함
+                        .and("designerInfo.name").as("designerName") // designerId 대신 name 추가
+        );
+
+        return mongoTemplate.aggregate(aggregation, "reservation", Reservation.class).getMappedResults();
     }
 
     @Override
