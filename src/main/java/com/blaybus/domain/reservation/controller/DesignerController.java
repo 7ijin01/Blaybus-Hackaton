@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +63,7 @@ public class DesignerController
 
     @GetMapping("/portfolio/load")
     @Operation(summary = "디자이너 포트폴리오 목록 표출", description = "/designers/portfolio/list에서 반환된 id를 가지고 하나씩 사진이나 영상으로 반환.")
-    public ResponseEntity<InputStreamResource> loadPortfolios(@RequestParam("objectId") String objectId) {
+    public ResponseEntity<Resource> loadPortfolios(@RequestParam("objectId") String objectId) {
         return designerService.streamPortfolios(objectId);
     }
 

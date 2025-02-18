@@ -6,6 +6,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
@@ -31,6 +32,7 @@ public class DesignerService
                 file.getContentType()
         );
 
+        String imageUrl = "/designers/portfolio/load" + objectId.toString();
 
         Designer designer = designerRepository.findOneById(designerId);
 
@@ -39,7 +41,7 @@ public class DesignerService
         }
 
         List<String> arrayList = designer.getPortfolios();
-        Objects.requireNonNull(arrayList).add(objectId.toHexString());
+        Objects.requireNonNull(arrayList).add(imageUrl);
         designerRepository.save(designer);
 
         return objectId.toHexString();
@@ -49,27 +51,14 @@ public class DesignerService
         return designerRepository.findOneById(designerId).getPortfolios();
     }
 
-    public ResponseEntity<InputStreamResource> streamPortfolios(String objectId){
+    public ResponseEntity<Resource> streamPortfolios(String objectId){
         GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(objectId)));
 
         GridFsResource resource = gridFsTemplate.getResource(file);
 
-        String contentType = Optional.ofNullable(file.getMetadata())
-                .map(metadata -> metadata.getString("contentType"))
-                .orElse("application/octet-stream");
-
-        try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType(contentType));
-            headers.setContentDisposition(ContentDisposition.inline().filename(file.getFilename()).build());
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(new InputStreamResource(resource.getInputStream()));
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(resource.getContentType())) // 이미지 타입 설정
+                .body(resource);
     }
 
     public List<Designer> getAllDesigners()
