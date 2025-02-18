@@ -2,6 +2,7 @@ package com.blaybus.domain.reservation.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,12 @@ import java.time.LocalTime;
 public class ReservationRequestDto {
     private String designerId;
     private Boolean meet;
-    private LocalDate date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private String date; // 날짜는 문자열로 받음
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
-    private LocalTime start;
+    private LocalTime start; // start를 문자열("HH:mm:ss")로 변환
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     private LocalTime end;
     private String shop;
