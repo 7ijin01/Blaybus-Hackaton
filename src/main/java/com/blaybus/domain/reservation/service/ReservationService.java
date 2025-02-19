@@ -89,7 +89,11 @@ public class ReservationService
 
 
         ));
+        log.info("date: {}", date);
         date.plusDays(1);
+        log.info("date: {}", date);
+        date.plusDays(1);
+        log.info("date: {}", date);
         Set<LocalTime> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date)
                 .stream()
                 .map(LocalTime::parse)
