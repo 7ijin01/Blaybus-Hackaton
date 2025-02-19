@@ -22,9 +22,9 @@ public class ReservationResponseDto
     private String designerId;
     private Boolean meet;
     private LocalDate date;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "H:mm:ss")
     private LocalTime start;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "H:mm:ss")
     private LocalTime end;
     private String shop;
     private String price;
