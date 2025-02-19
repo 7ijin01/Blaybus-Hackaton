@@ -89,7 +89,7 @@ public class ReservationService
 
 
         ));
-
+        date.plusDays(1);
         Set<LocalTime> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date)
                 .stream()
                 .map(LocalTime::parse)
