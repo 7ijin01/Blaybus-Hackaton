@@ -54,6 +54,7 @@ public class ReservationService
 
         String userId = jwtUtil.getEmail(accessToken.substring(7).trim());
         Reservation reservation=Reservation.buildReservation(requestDto);
+        reservation.setDate(reservation.getDate().plusDays(1));
         reservation.setUserId(userId);
         reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
@@ -79,7 +80,10 @@ public class ReservationService
                 LocalTime.of(12, 0), LocalTime.of(12, 30), LocalTime.of(13, 0), LocalTime.of(13, 30),
                 LocalTime.of(14, 0), LocalTime.of(14, 30), LocalTime.of(15, 0), LocalTime.of(15, 30),
                 LocalTime.of(16, 0), LocalTime.of(16, 30), LocalTime.of(17, 0), LocalTime.of(17, 30),
-                LocalTime.of(18, 0), LocalTime.of(18, 30), LocalTime.of(19, 0), LocalTime.of(19, 30)
+                LocalTime.of(18, 0), LocalTime.of(18, 30), LocalTime.of(19, 0), LocalTime.of(19, 30),
+                LocalTime.of(20, 0)
+
+
         ));
 
         Set<LocalTime> reservedTimes = reservationRepository.findByDesignerIdAndDate(designerId, date)
