@@ -18,12 +18,12 @@ public class BankTransferController {
     /**
      * 계좌이체 결제 요청
      */
-    @Operation(summary = "계좌이체 결제 요청", description = "사용자가 계좌이체로 결제를 요청함")
-    @PostMapping("/request")
-    public ResponseEntity<String> requestBankTransfer(@RequestBody BankTransferRequestDTO requestDTO) {
-        String paymentId = bankTransferService.processBankTransfer(requestDTO);
-        return ResponseEntity.ok("결제 준비 완료. 입금 대기 중. paymentId: " + paymentId); // paymentId 반환
-    }
+//    @Operation(summary = "계좌이체 결제 요청", description = "사용자가 계좌이체로 결제를 요청함")
+//    @PostMapping("/request")
+//    public ResponseEntity<String> requestBankTransfer(@RequestBody BankTransferRequestDTO requestDTO) {
+//        String paymentId = bankTransferService.processBankTransfer(requestDTO);
+//        return ResponseEntity.ok("결제 준비 완료. 입금 대기 중. paymentId: " + paymentId); // paymentId 반환
+//    }
 
     /**
      * 계좌이체 입금 확인 처리
