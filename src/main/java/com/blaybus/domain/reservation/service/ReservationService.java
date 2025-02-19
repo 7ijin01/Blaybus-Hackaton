@@ -58,6 +58,10 @@ public class ReservationService
         reservation.setUserId(userId);
         reservation.setCreatedAt(Date.from(Instant.now()));
         reservationRepository.save(reservation);
+        if(reservation.getMethod().equals("BANK_TRANSFER")) {
+            bankTransferService.processBankTransfer(requestDto, reservation.getId(), userId);
+        }
+
         return new ReservationResponseDto(reservation);
     }
 

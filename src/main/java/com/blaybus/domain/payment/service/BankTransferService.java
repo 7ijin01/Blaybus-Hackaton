@@ -1,11 +1,13 @@
 package com.blaybus.domain.payment.service;
 
+import com.blaybus.domain.payment.dto.AmountDTO;
 import com.blaybus.domain.payment.dto.BankTransferRequestDTO;
 import com.blaybus.domain.payment.entity.BankTransferInfo;
 import com.blaybus.domain.payment.entity.PaymentEntity;
 import com.blaybus.domain.payment.entity.enums.PaymentMethod;
 import com.blaybus.domain.payment.entity.enums.PaymentStatus;
 import com.blaybus.domain.payment.repository.PaymentRepository;
+import com.blaybus.domain.reservation.dto.ReservationRequestDto;
 import com.blaybus.domain.reservation.entity.Reservation;
 import com.blaybus.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +23,21 @@ public class BankTransferService {
     private final ReservationRepository reservationRepository;
 
     // 계좌이체 결제 처리
-    public String processBankTransfer(BankTransferRequestDTO requestDTO) {
+    public String processBankTransfer(ReservationRequestDto requestDto, String reservationId, String userId) {
         // 계좌이체 정보 생성
         BankTransferInfo bankTransferInfo = BankTransferInfo.builder()
-                .accountNumber(requestDTO.getAccountNumber())  // 고객이 입금할 계좌번호
-                .bankName(requestDTO.getBankName())  // 은행명
-                .depositorName(requestDTO.getDepositorName())  // 예금자명
+                .accountNumber("110-123-456789")  // 고객이 입금할 계좌번호
+                .bankName("신한은행")  // 은행명
+                .depositorName("Bliss(김아정)")  // 예금자명
                 .build();
+
 
         // 결제 정보 생성
         PaymentEntity paymentEntity = PaymentEntity.builder()
-                .reservationId(requestDTO.getReservationId())
-                .userId(requestDTO.getUserId())
-                .designerId(requestDTO.getDesignerId())
-                .amount(requestDTO.getAmount())
+                .reservationId(reservationId)
+                .userId(userId)
+                .designerId(requestDto.getDesignerId())
+                .amount(new AmountDTO())
                 .paymentMethod(PaymentMethod.BANK_TRANSFER)
                 .status(PaymentStatus.PENDING)  // 입금 대기 상태
                 .createdAt(LocalDateTime.now())
