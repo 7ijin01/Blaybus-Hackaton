@@ -94,9 +94,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
 
+      - name: 현재 Deployment 확인
+        run: kubectl get deployments --all-namespaces
+
+      - name: Deployment가 없으면 생성
+        run: |
+          if ! kubectl get deployment blaybus-deployment &> /dev/null; then
+            kubectl apply -f deployment.yaml
+          fi
+
       - name: 기존 Deployment의 이미지 업데이트
         run: kubectl set image deployment/blaybus-deployment blaybus-container=us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
-
+      
       - name: 배포 서버에 SSH로 연결하여 배포 (GKE 적용 후 제거 가능)
         uses: appleboy/ssh-action@v0.1.5
         with:
