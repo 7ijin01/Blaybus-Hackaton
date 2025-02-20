@@ -84,6 +84,11 @@ jobs:
       - name: GKE 클러스터 인증
         run: gcloud container clusters get-credentials cluster-1 --region us-central1
 
+      - name: GKE 인증 플러그인 설치
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          gcloud components update
+
       - name: 기존 Deployment의 이미지 업데이트
         run: kubectl set image deployment/blaybus-deployment blaybus-container=us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
 
