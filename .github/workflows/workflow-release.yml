@@ -53,6 +53,7 @@ jobs:
         run: |
           docker build --build-arg SPRING_PROFILE=prod -t us-central1-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/docker/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
           docker push us-central1-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/docker/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
   CD:
     runs-on: ubuntu-latest
     needs: CI
@@ -83,23 +84,11 @@ jobs:
       - name: GKE 클러스터 인증
         run: gcloud container clusters get-credentials cluster-1 --region us-central1
 
-      - name: GKE 인증 플러그인 설치 (GPG 키 문제 해결)
+      - name: GKE 인증 플러그인 설치
         run: |
-          sudo apt-get update
-          sudo apt-get install -y apt-transport-https ca-certificates curl
-          sudo mkdir -p /usr/share/keyrings
-          curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
-          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee /etc/apt/sources.list.d/google-cloud-sdk.list
-          sudo apt-get update
-          sudo apt-get install -y google-cloud-cli-gke-gcloud-auth-plugin
-      - name: 현재 Deployment 확인
-        run: kubectl get deployments --all-namespaces
+          gcloud components install gke-gcloud-auth-plugin
+          gcloud components update
 
-      - name: Deployment가 없으면 생성
-        run: |
-          if ! kubectl get deployment blaybus-deployment &> /dev/null; then
-            kubectl apply -f deployment.yaml
-          fi
       - name: 기존 Deployment의 이미지 업데이트
         run: kubectl set image deployment/blaybus-deployment blaybus-container=us-central1-docker.pkg.dev/${GCP_PROJECT_ID}/docker/${IMAGE_NAME}:${IMAGE_TAG}
 
