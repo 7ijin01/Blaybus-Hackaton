@@ -84,7 +84,7 @@ jobs:
       - name: GKE 클러스터 인증
         run: gcloud container clusters get-credentials cluster-1 --region us-central1
 
-            - name: GKE 인증 플러그인 설치 (GPG 키 문제 해결)
+      - name: GKE 인증 플러그인 설치 (GPG 키 문제 해결)
         run: |
           sudo apt-get update
           sudo apt-get install -y apt-transport-https ca-certificates curl
