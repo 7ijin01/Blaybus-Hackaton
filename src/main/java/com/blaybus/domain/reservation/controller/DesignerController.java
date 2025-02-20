@@ -66,5 +66,4 @@ public class DesignerController
     public ResponseEntity<Resource> loadPortfolios(@RequestParam("objectId") String objectId) {
         return designerService.streamPortfolios(objectId);
     }
-
 }

@@ -1,8 +1,6 @@
 package com.blaybus.domain.reservation.repository.custom.reservation;
 
-import com.blaybus.domain.reservation.entity.Reservation;
-import com.blaybus.domain.reservation.repository.MongoRepositoryUtil;
-import org.checkerframework.checker.units.qual.C;
+    import com.blaybus.domain.reservation.entity.Reservation;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -56,6 +54,7 @@ public class CustomReservationRepositoryImpl implements CustomReservationReposit
         }
         return "예약 정보 삭제 실패";
     }
+
 
 }
 
