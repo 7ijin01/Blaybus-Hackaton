@@ -67,6 +67,9 @@ jobs:
       KAKAOPAY_KEY: ${{ secrets.KAKAOPAY_KEY }}
 
     steps:
+      - name: GCP 프로젝트 설정
+        run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+        
       - name: GKE 클러스터 인증
         run: gcloud container clusters get-credentials cluster-1 --region us-central1
 
