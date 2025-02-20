@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blaybus-deployment
+  labels:
+    app: blaybus
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blaybus
+  template:
+    metadata:
+      labels:
+        app: blaybus
+    spec:
+      containers:
+        - name: blaybus-container
+          image: us-central1-docker.pkg.dev/YOUR_GCP_PROJECT_ID/docker/blaybus:latest
+          ports:
+            - containerPort: 8080
